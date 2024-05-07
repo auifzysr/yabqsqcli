@@ -27,6 +27,7 @@ func Run() error {
 		Commands: []*cli.Command{
 			getCommand(),
 			listCommand(),
+			createCommand(),
 		},
 	}
 
