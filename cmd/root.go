@@ -29,6 +29,7 @@ func Run() error {
 			listCommand(),
 			createCommand(),
 			updateCommand(),
+			deleteCommand(),
 		},
 	}
 
