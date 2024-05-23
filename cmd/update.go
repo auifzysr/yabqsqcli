@@ -22,26 +22,31 @@ func update(config *updateConfig) error {
 		return fmt.Errorf("invalid params: %w", err)
 	}
 
+	tc := &datatransferpb.TransferConfig{
+		Name:         fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s", projectID, region, config.configID),
+		DisplayName:  config.displayName,
+		DataSourceId: "scheduled_query",
+		Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
+			DestinationDatasetId: config.destinationDataset,
+		},
+		Params: &structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"query": params,
+			},
+		},
+		Schedule: config.schedule,
+		Disabled: config.disabled,
+	}
+	// TransferConfig works as proto.Message
+	// TODO: get specified option name and append to the tail
+	fm, err := fieldmaskpb.New(tc, "params")
+	if err != nil {
+		return fmt.Errorf("invalid fieldmask: %w", err)
+	}
 	m, err := c.UpdateTransferConfig(
 		ctx, &datatransferpb.UpdateTransferConfigRequest{
-			TransferConfig: &datatransferpb.TransferConfig{
-				Name:         fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s", projectID, region, config.configID),
-				DisplayName:  config.displayName,
-				DataSourceId: "scheduled_query",
-				Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-					DestinationDatasetId: config.destinationDataset,
-				},
-				Params: &structpb.Struct{
-					Fields: map[string]*structpb.Value{
-						"query": params,
-					},
-				},
-				Schedule: config.schedule,
-				Disabled: config.disabled,
-			},
-			// TODO: don't know what this fields does but they say needed
-			// https://pkg.go.dev/cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb#TransferConfig
-			UpdateMask: &fieldmaskpb.FieldMask{},
+			TransferConfig: tc,
+			UpdateMask:     fm,
 		},
 	)
 	if err != nil {
