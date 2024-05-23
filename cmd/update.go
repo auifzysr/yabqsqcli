@@ -57,7 +57,6 @@ func update(config *updateConfig) error {
 }
 
 type updateConfig struct {
-	name               string
 	displayName        string
 	destinationDataset string
 	query              string
@@ -76,13 +75,6 @@ func updateCommand() *cli.Command {
 			return update(config)
 		},
 		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:        "name",
-				Aliases:     []string{"n"},
-				Value:       "",
-				Usage:       "scheduled query name",
-				Destination: &config.name,
-			},
 			&cli.StringFlag{
 				Name:        "displayName",
 				Aliases:     []string{"dn"},
