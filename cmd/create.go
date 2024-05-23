@@ -6,6 +6,7 @@ import (
 
 	datatransfer "cloud.google.com/go/bigquery/datatransfer/apiv1"
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
+	"github.com/auifzysr/yabqsqcli/domain"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -20,11 +21,17 @@ func create(config *createConfig) error {
 	if err != nil {
 		return fmt.Errorf("invalid params: %w", err)
 	}
+	tcs := &domain.TransferConfigsPathSpec{
+		ProjectID: projectID,
+		Location:  region,
+	}
+	p, err := tcs.Parent()
+	if err != nil {
+		return err
+	}
 	m, err := c.CreateTransferConfig(
 		ctx, &datatransferpb.CreateTransferConfigRequest{
-			Parent: fmt.Sprintf(`projects/%s/locations/%s`,
-				projectID, region,
-			),
+			Parent: p,
 			TransferConfig: &datatransferpb.TransferConfig{
 				Name:         config.name,
 				DisplayName:  config.displayName,
