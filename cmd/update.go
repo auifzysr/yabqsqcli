@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	datatransfer "cloud.google.com/go/bigquery/datatransfer/apiv1"
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/domain"
 	"github.com/urfave/cli/v2"
@@ -13,11 +12,6 @@ import (
 )
 
 func update(config *updateConfig) error {
-	ctx := context.Background()
-	c, err := datatransfer.NewClient(ctx)
-	if err != nil {
-		return fmt.Errorf("data transfer client failed: %w", err)
-	}
 	params, err := structpb.NewValue(config.query)
 	if err != nil {
 		return fmt.Errorf("invalid params: %w", err)
@@ -53,7 +47,8 @@ func update(config *updateConfig) error {
 	if err != nil {
 		return fmt.Errorf("invalid fieldmask: %w", err)
 	}
-	m, err := c.UpdateTransferConfig(
+	ctx := context.Background()
+	m, err := client.UpdateTransferConfig(
 		ctx, &datatransferpb.UpdateTransferConfigRequest{
 			TransferConfig: tc,
 			UpdateMask:     fm,
