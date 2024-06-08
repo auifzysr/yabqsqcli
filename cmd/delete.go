@@ -4,18 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	datatransfer "cloud.google.com/go/bigquery/datatransfer/apiv1"
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/domain"
 	"github.com/urfave/cli/v2"
 )
 
 func delete() error {
-	ctx := context.Background()
-	c, err := datatransfer.NewClient(ctx)
-	if err != nil {
-		return fmt.Errorf("data transfer client failed: %w", err)
-	}
 	tcs := &domain.TransferConfigsPathSpec{
 		ProjectID: projectID,
 		Location:  region,
@@ -25,7 +19,8 @@ func delete() error {
 	if err != nil {
 		return err
 	}
-	m := c.DeleteTransferConfig(
+	ctx := context.Background()
+	m := client.DeleteTransferConfig(
 		ctx, &datatransferpb.DeleteTransferConfigRequest{
 			Name: n,
 		},
