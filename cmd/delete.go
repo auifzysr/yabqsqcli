@@ -30,9 +30,7 @@ func delete() error {
 			Name: n,
 		},
 	)
-	if err != nil {
-		return fmt.Errorf("deleteting transfer failed: %w", err)
-	}
+
 	fmt.Printf("meta: %+v", m)
 	return nil
 }
