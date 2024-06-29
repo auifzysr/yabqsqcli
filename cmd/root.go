@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/auifzysr/yabqsqcli/domain"
+	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/urfave/cli/v2"
 )
 
