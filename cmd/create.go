@@ -5,13 +5,14 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
+	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func create(config *createConfig) error {
-	params, err := structpb.NewValue(config.query)
+func create(cfg *config.TransferCreateConfig) error {
+	params, err := structpb.NewValue(cfg.Query)
 	if err != nil {
 		return fmt.Errorf("invalid params: %w", err)
 	}
@@ -28,19 +29,19 @@ func create(config *createConfig) error {
 		ctx, &datatransferpb.CreateTransferConfigRequest{
 			Parent: p,
 			TransferConfig: &datatransferpb.TransferConfig{
-				Name:         config.name,
-				DisplayName:  config.displayName,
+				Name:         cfg.Name,
+				DisplayName:  cfg.DisplayName,
 				DataSourceId: "scheduled_query",
 				Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-					DestinationDatasetId: config.destinationDataset,
+					DestinationDatasetId: cfg.DestinationDataset,
 				},
 				Params: &structpb.Struct{
 					Fields: map[string]*structpb.Value{
 						"query": params,
 					},
 				},
-				Schedule: config.schedule,
-				Disabled: config.disabled,
+				Schedule: cfg.Schedule,
+				Disabled: cfg.Disabled,
 			},
 		},
 	)
@@ -53,42 +54,13 @@ func create(config *createConfig) error {
 	return nil
 }
 
-type createConfig struct {
-	name               string
-	displayName        string
-	destinationDataset string
-	query              string
-	schedule           string
-	disabled           bool
-
-	// TODO: add options available on google cloud console:
-	// repeatFrequency string
-	// repeatsEvery string
-	// startNow bool
-	// startAtSetTime bool
-	// startDateAndRunTime time.Time
-	// endNever bool
-	// scheduleEndTime time.Time
-	// destinationDatasetID string
-	// destinationTableID string
-	// destinationTablePartitioningField string
-	// destinationTableWritePreference string
-	// automaticLocationSelection bool
-	// locationType string
-	// locationRegion string
-	// serviceAccountEmail string
-	// encryptionKey string
-	// notificationSendEmailNotifications bool
-	// notificationSendCloudPubSubTopic string
-}
-
 func createCommand() *cli.Command {
-	config := &createConfig{}
+	cfg := &config.TransferCreateConfig{}
 	return &cli.Command{
 		Name:  "create",
 		Usage: "create scheduled query config",
 		Action: func(cCtx *cli.Context) error {
-			return create(config)
+			return create(cfg)
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -96,42 +68,42 @@ func createCommand() *cli.Command {
 				Aliases:     []string{"n"},
 				Value:       "",
 				Usage:       "scheduled query name",
-				Destination: &config.name,
+				Destination: &cfg.Name,
 			},
 			&cli.StringFlag{
 				Name:        "displayName",
 				Aliases:     []string{"dn"},
 				Value:       "",
 				Usage:       "scheduled query display name",
-				Destination: &config.displayName,
+				Destination: &cfg.DisplayName,
 			},
 			&cli.StringFlag{
 				Name:        "query",
 				Aliases:     []string{"q"},
 				Value:       "",
 				Usage:       "scheduled query text",
-				Destination: &config.query,
+				Destination: &cfg.Query,
 			},
 			&cli.StringFlag{
 				Name:        "destination",
 				Aliases:     []string{"dd"},
 				Value:       "",
 				Usage:       "scheduled query destination dataset",
-				Destination: &config.destinationDataset,
+				Destination: &cfg.DestinationDataset,
 			},
 			&cli.StringFlag{
 				Name:        "schedule",
 				Aliases:     []string{"sch"},
 				Value:       "",
 				Usage:       "scheduled query schedule",
-				Destination: &config.schedule,
+				Destination: &cfg.Schedule,
 			},
 			&cli.BoolFlag{
 				Name:        "disabled",
 				Aliases:     []string{"d"},
 				Value:       true,
 				Usage:       "scheduled query disabled",
-				Destination: &config.disabled,
+				Destination: &cfg.Disabled,
 			},
 		},
 	}
