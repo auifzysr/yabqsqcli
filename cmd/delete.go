@@ -20,13 +20,15 @@ func delete() error {
 		return err
 	}
 	ctx := context.Background()
-	m := client.DeleteTransferConfig(
+	err = client.DeleteTransferConfig(
 		ctx, &datatransferpb.DeleteTransferConfigRequest{
 			Name: n,
 		},
 	)
+	if err != nil {
+		return fmt.Errorf("getting transfer failed: %w", err)
+	}
 
-	fmt.Printf("meta: %+v", m)
 	return nil
 }
 
