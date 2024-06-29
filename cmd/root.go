@@ -28,6 +28,13 @@ func Run() error {
 				Usage:       "projectID",
 				Destination: &projectID,
 			},
+			&cli.StringFlag{
+				Name:        "region",
+				Aliases:     []string{"g"},
+				Value:       "",
+				Usage:       "region",
+				Destination: &region,
+			},
 		},
 		Commands: []*cli.Command{
 			getCommand(),
