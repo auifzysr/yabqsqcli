@@ -60,6 +60,26 @@ type createConfig struct {
 	query              string
 	schedule           string
 	disabled           bool
+
+	// TODO: add options available on google cloud console:
+	// repeatFrequency string
+	// repeatsEvery string
+	// startNow bool
+	// startAtSetTime bool
+	// startDateAndRunTime time.Time
+	// endNever bool
+	// scheduleEndTime time.Time
+	// destinationDatasetID string
+	// destinationTableID string
+	// destinationTablePartitioningField string
+	// destinationTableWritePreference string
+	// automaticLocationSelection bool
+	// locationType string
+	// locationRegion string
+	// serviceAccountEmail string
+	// encryptionKey string
+	// notificationSendEmailNotifications bool
+	// notificationSendCloudPubSubTopic string
 }
 
 func createCommand() *cli.Command {
