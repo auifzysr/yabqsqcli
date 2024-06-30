@@ -1,6 +1,8 @@
 package config
 
-type TransferCreateConfig struct {
+type CreateConfig struct {
+	*RootConfig
+
 	Name               string
 	DisplayName        string
 	DestinationDataset string

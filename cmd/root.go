@@ -45,7 +45,7 @@ func Run() error {
 		Commands: []*cli.Command{
 			getCommand(rootCfg),
 			listCommand(rootCfg),
-			createCommand(),
+			createCommand(rootCfg),
 			updateCommand(),
 			deleteCommand(rootCfg),
 		},
