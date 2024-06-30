@@ -43,7 +43,7 @@ func Run() error {
 			},
 		},
 		Commands: []*cli.Command{
-			getCommand(),
+			getCommand(rootCfg),
 			listCommand(rootCfg),
 			createCommand(),
 			updateCommand(),
