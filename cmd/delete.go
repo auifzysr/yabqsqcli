@@ -5,15 +5,17 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
+	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/urfave/cli/v2"
 )
 
-func delete() error {
+func delete(cfg *config.DeleteConfig) error {
+	// TODO: resolve TransferConfigID by DisplayName
 	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: projectID,
-		Location:  region,
-		ID:        transferConfigID,
+		ProjectID: cfg.ProjectID,
+		Location:  cfg.Region,
+		ID:        cfg.TransferConfigID,
 	}
 	n, err := tcs.Name()
 	if err != nil {
@@ -32,13 +34,17 @@ func delete() error {
 	return nil
 }
 
-func deleteCommand() *cli.Command {
+func deleteCommand(rootCfg *config.RootConfig) *cli.Command {
+	cfg := &config.DeleteConfig{
+		RootConfig: rootCfg,
+	}
+
 	return &cli.Command{
 		Name:    "delete",
 		Aliases: []string{"d"},
 		Usage:   "delete scheduled query config",
 		Action: func(cCtx *cli.Context) error {
-			return delete()
+			return delete(cfg)
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -46,7 +52,14 @@ func deleteCommand() *cli.Command {
 				Aliases:     []string{"c"},
 				Value:       "",
 				Usage:       "transferConfigID",
-				Destination: &transferConfigID,
+				Destination: &cfg.TransferConfigID,
+			},
+			&cli.StringFlag{
+				Name:        "displayName",
+				Aliases:     []string{"n"},
+				Value:       "",
+				Usage:       "displayName",
+				Destination: &cfg.DisplayName,
 			},
 		},
 	}
