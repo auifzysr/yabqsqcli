@@ -11,19 +11,21 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func create(cfg *config.TransferCreateConfig) error {
-	params, err := structpb.NewValue(cfg.Query)
-	if err != nil {
-		return fmt.Errorf("invalid params: %w", err)
-	}
+func create(cfg *config.CreateConfig) error {
 	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: projectID,
-		Location:  region,
+		ProjectID: cfg.ProjectID,
+		Location:  cfg.Region,
 	}
 	p, err := tcs.Parent()
 	if err != nil {
 		return err
 	}
+
+	params, err := structpb.NewValue(cfg.Query)
+	if err != nil {
+		return fmt.Errorf("invalid params: %w", err)
+	}
+
 	ctx := context.Background()
 	m, err := client.CreateTransferConfig(
 		ctx, &datatransferpb.CreateTransferConfigRequest{
@@ -54,8 +56,11 @@ func create(cfg *config.TransferCreateConfig) error {
 	return nil
 }
 
-func createCommand() *cli.Command {
-	cfg := &config.TransferCreateConfig{}
+func createCommand(rootCfg *config.RootConfig) *cli.Command {
+	cfg := &config.CreateConfig{
+		RootConfig: rootCfg,
+	}
+
 	return &cli.Command{
 		Name:  "create",
 		Usage: "create scheduled query config",
