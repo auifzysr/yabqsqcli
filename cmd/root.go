@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/urfave/cli/v2"
 )
@@ -13,12 +14,17 @@ var (
 	projectID        string
 	transferConfigID string
 
-	region = "asia-northeast1"
+	defaultRegion = "asia-northeast1"
+	region        = defaultRegion
 
 	client *domain.Client
 )
 
 func Run() error {
+	rootCfg := &config.RootConfig{
+		Region: defaultRegion,
+	}
+
 	app := &cli.App{
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -26,19 +32,19 @@ func Run() error {
 				Aliases:     []string{"p"},
 				Value:       "",
 				Usage:       "projectID",
-				Destination: &projectID,
+				Destination: &rootCfg.ProjectID,
 			},
 			&cli.StringFlag{
 				Name:        "region",
 				Aliases:     []string{"g"},
 				Value:       "",
 				Usage:       "region",
-				Destination: &region,
+				Destination: &rootCfg.Region,
 			},
 		},
 		Commands: []*cli.Command{
 			getCommand(),
-			listCommand(),
+			listCommand(rootCfg),
 			createCommand(),
 			updateCommand(),
 			deleteCommand(),
