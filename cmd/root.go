@@ -47,7 +47,7 @@ func Run() error {
 			listCommand(rootCfg),
 			createCommand(),
 			updateCommand(),
-			deleteCommand(),
+			deleteCommand(rootCfg),
 		},
 	}
 
