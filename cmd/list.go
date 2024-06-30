@@ -5,14 +5,15 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
+	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/urfave/cli/v2"
 )
 
-func list() error {
+func list(cfg *config.ListConfig) error {
 	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: projectID,
-		Location:  region,
+		ProjectID: cfg.ProjectID,
+		Location:  cfg.Region,
 	}
 	p, err := tcs.Parent()
 	if err != nil {
@@ -35,13 +36,17 @@ func list() error {
 	return nil
 }
 
-func listCommand() *cli.Command {
+func listCommand(rootCfg *config.RootConfig) *cli.Command {
+	cfg := &config.ListConfig{
+		RootConfig: rootCfg,
+	}
+
 	return &cli.Command{
 		Name:    "list",
 		Aliases: []string{"l"},
 		Usage:   "list scheduled query configs",
 		Action: func(cCtx *cli.Context) error {
-			return list()
+			return list(cfg)
 		},
 	}
 }
