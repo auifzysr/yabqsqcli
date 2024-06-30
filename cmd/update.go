@@ -5,41 +5,44 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
+	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func update(config *updateConfig) error {
-	params, err := structpb.NewValue(config.query)
-	if err != nil {
-		return fmt.Errorf("invalid params: %w", err)
-	}
+// TODO: works only with displayName
+func update(cfg *config.UpdateConfig) error {
 	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: projectID,
-		Location:  region,
-		ID:        transferConfigID,
+		ProjectID: cfg.ProjectID,
+		Location:  cfg.Region,
+		ID:        cfg.ConfigID,
 	}
 	n, err := tcs.Name()
 	if err != nil {
 		return err
 	}
 
+	params, err := structpb.NewValue(cfg.Query)
+	if err != nil {
+		return fmt.Errorf("invalid params: %w", err)
+	}
+
 	tc := &datatransferpb.TransferConfig{
 		Name:         n,
-		DisplayName:  config.displayName,
+		DisplayName:  cfg.DisplayName,
 		DataSourceId: "scheduled_query",
 		Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-			DestinationDatasetId: config.destinationDataset,
+			DestinationDatasetId: cfg.DestinationDataset,
 		},
 		Params: &structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"query": params,
 			},
 		},
-		Schedule: config.schedule,
-		Disabled: config.disabled,
+		Schedule: cfg.Schedule,
+		Disabled: cfg.Disabled,
 	}
 	// TransferConfig works as proto.Message
 	// TODO: get specified option name and append to the tail
@@ -55,29 +58,24 @@ func update(config *updateConfig) error {
 		},
 	)
 	if err != nil {
-		return fmt.Errorf("updating transfer failed: name=%s, err=%w", fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s", projectID, region, config.configID), err)
+		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
+			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
+				cfg.ProjectID, cfg.Region, cfg.ConfigID), err)
 	}
 	fmt.Printf("meta: %+v", m)
 	return nil
 }
 
-type updateConfig struct {
-	displayName        string
-	destinationDataset string
-	query              string
-	schedule           string
-	disabled           bool
+func updateCommand(rootCfg *config.RootConfig) *cli.Command {
+	cfg := &config.UpdateConfig{
+		RootConfig: rootCfg,
+	}
 
-	configID string
-}
-
-func updateCommand() *cli.Command {
-	config := &updateConfig{}
 	return &cli.Command{
 		Name:  "update",
 		Usage: "update scheduled query config",
 		Action: func(cCtx *cli.Context) error {
-			return update(config)
+			return update(cfg)
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -85,42 +83,42 @@ func updateCommand() *cli.Command {
 				Aliases:     []string{"dn"},
 				Value:       "",
 				Usage:       "scheduled query display name",
-				Destination: &config.displayName,
+				Destination: &cfg.DisplayName,
 			},
 			&cli.StringFlag{
 				Name:        "query",
 				Aliases:     []string{"q"},
 				Value:       "",
 				Usage:       "scheduled query text",
-				Destination: &config.query,
+				Destination: &cfg.Query,
 			},
 			&cli.StringFlag{
 				Name:        "destination",
 				Aliases:     []string{"dd"},
 				Value:       "",
 				Usage:       "scheduled query destination dataset",
-				Destination: &config.destinationDataset,
+				Destination: &cfg.DestinationDataset,
 			},
 			&cli.StringFlag{
 				Name:        "schedule",
 				Aliases:     []string{"sch"},
 				Value:       "",
 				Usage:       "scheduled query schedule",
-				Destination: &config.schedule,
+				Destination: &cfg.Schedule,
 			},
 			&cli.BoolFlag{
 				Name:        "disabled",
 				Aliases:     []string{"d"},
 				Value:       true,
 				Usage:       "scheduled query disabled",
-				Destination: &config.disabled,
+				Destination: &cfg.Disabled,
 			},
 			&cli.StringFlag{
 				Name:        "transferConfigID",
 				Aliases:     []string{"c"},
 				Value:       "",
 				Usage:       "transferConfigID",
-				Destination: &config.configID,
+				Destination: &cfg.ConfigID,
 			},
 		},
 	}

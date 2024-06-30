@@ -11,9 +11,6 @@ import (
 )
 
 var (
-	projectID        string
-	transferConfigID string
-
 	defaultRegion = "asia-northeast1"
 	region        = defaultRegion
 
@@ -46,7 +43,7 @@ func Run() error {
 			getCommand(rootCfg),
 			listCommand(rootCfg),
 			createCommand(rootCfg),
-			updateCommand(),
+			updateCommand(rootCfg),
 			deleteCommand(rootCfg),
 		},
 	}
