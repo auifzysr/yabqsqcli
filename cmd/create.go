@@ -49,7 +49,7 @@ func create(cfg *config.CreateConfig) error {
 	)
 	if err != nil {
 		return fmt.Errorf("creating transfer failed: parent: %s, %w", fmt.Sprintf(`projects/%s/locations/%s`,
-			projectID, region,
+			cfg.ProjectID, cfg.Region,
 		), err)
 	}
 	fmt.Printf("meta: %+v", m)
