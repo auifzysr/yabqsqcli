@@ -1,5 +1,7 @@
 package config
 
+func (*CreateConfig) configFunc() {}
+
 type CreateConfig struct {
 	*RootConfig
 

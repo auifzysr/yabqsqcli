@@ -4,49 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
-	"github.com/auifzysr/yabqsqcli/pkg/domain"
+	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func create(cfg *config.CreateConfig) error {
-	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: cfg.ProjectID,
-		Location:  cfg.Region,
-	}
-	p, err := tcs.Parent()
+	tc, err := factory.CreateTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
-
-	params, err := structpb.NewValue(cfg.Query)
-	if err != nil {
-		return fmt.Errorf("invalid params: %w", err)
-	}
-
 	ctx := context.Background()
-	m, err := client.CreateTransferConfig(
-		ctx, &datatransferpb.CreateTransferConfigRequest{
-			Parent: p,
-			TransferConfig: &datatransferpb.TransferConfig{
-				Name:         cfg.Name,
-				DisplayName:  cfg.DisplayName,
-				DataSourceId: "scheduled_query",
-				Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-					DestinationDatasetId: cfg.DestinationDataset,
-				},
-				Params: &structpb.Struct{
-					Fields: map[string]*structpb.Value{
-						"query": params,
-					},
-				},
-				Schedule: cfg.Schedule,
-				Disabled: cfg.Disabled,
-			},
-		},
-	)
+
+	m, err := client.CreateTransferConfig(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("creating transfer failed: parent: %s, %w", fmt.Sprintf(`projects/%s/locations/%s`,
 			cfg.ProjectID, cfg.Region,
