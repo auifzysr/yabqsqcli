@@ -4,31 +4,23 @@ import (
 	"context"
 	"fmt"
 
-	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
-	"github.com/auifzysr/yabqsqcli/pkg/domain"
+	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
 
 func delete(cfg *config.DeleteConfig) error {
-	// TODO: resolve TransferConfigID by DisplayName
-	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: cfg.ProjectID,
-		Location:  cfg.Region,
-		ID:        cfg.TransferConfigID,
-	}
-	n, err := tcs.Name()
+	tc, err := factory.DeleteTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
 	ctx := context.Background()
-	err = client.DeleteTransferConfig(
-		ctx, &datatransferpb.DeleteTransferConfigRequest{
-			Name: n,
-		},
-	)
+
+	err = client.DeleteTransferConfig(ctx, tc)
 	if err != nil {
-		return fmt.Errorf("getting transfer failed: %w", err)
+		return fmt.Errorf("deleting transfer failed: parent: %s, %w", fmt.Sprintf(`projects/%s/locations/%s`,
+			cfg.ProjectID, cfg.Region,
+		), err)
 	}
 
 	return nil
