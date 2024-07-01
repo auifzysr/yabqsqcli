@@ -4,27 +4,18 @@ import (
 	"context"
 	"fmt"
 
-	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
-	"github.com/auifzysr/yabqsqcli/pkg/domain"
+	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
 
 func list(cfg *config.ListConfig) error {
-	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: cfg.ProjectID,
-		Location:  cfg.Region,
-	}
-	p, err := tcs.Parent()
+	tc, err := factory.ListTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
 	ctx := context.Background()
-	itr := client.ListTransferConfigs(ctx,
-		&datatransferpb.ListTransferConfigsRequest{
-			Parent: p,
-		},
-	)
+	itr := client.ListTransferConfigs(ctx, tc)
 	for {
 		c, err := itr.Next()
 		if err != nil {
