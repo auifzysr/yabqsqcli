@@ -40,10 +40,8 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		Disabled: cfg.Disabled,
 	}
 
-	req := &datatransferpb.CreateTransferConfigRequest{
+	return &datatransferpb.CreateTransferConfigRequest{
 		Parent:         p,
 		TransferConfig: tc,
-	}
-
-	return req, nil
+	}, nil
 }
