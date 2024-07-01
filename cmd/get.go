@@ -4,33 +4,26 @@ import (
 	"context"
 	"fmt"
 
-	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
-	"github.com/auifzysr/yabqsqcli/pkg/domain"
+	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
 
 func get(cfg *config.GetConfig) error {
-	// TODO: resolve TransferConfigID by DisplayName
-	tcs := &domain.TransferConfigsPathSpec{
-		ProjectID: cfg.ProjectID,
-		Location:  cfg.Region,
-		ID:        cfg.TransferConfigID,
-	}
-	n, err := tcs.Name()
+	tc, err := factory.GetTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
 	ctx := context.Background()
-	m, err := client.GetTransferConfig(
-		ctx, &datatransferpb.GetTransferConfigRequest{
-			Name: n,
-		},
-	)
+
+	m, err := client.GetTransferConfig(ctx, tc)
 	if err != nil {
-		return fmt.Errorf("getting transfer failed: %w", err)
+		return fmt.Errorf("getting transfer failed: parent: %s, %w", fmt.Sprintf(`projects/%s/locations/%s`,
+			cfg.ProjectID, cfg.Region,
+		), err)
 	}
 	fmt.Printf("meta: %+v", m)
+
 	return nil
 }
 
