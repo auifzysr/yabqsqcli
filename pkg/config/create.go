@@ -32,6 +32,4 @@ type CreateConfig struct {
 	// locationRegion string
 
 	// encryptionKey string
-	// notificationSendEmailNotifications bool
-	// notificationSendCloudPubSubTopic string
 }
