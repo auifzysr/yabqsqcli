@@ -88,8 +88,15 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Name:        "pubsubtopic",
 				Aliases:     []string{"pt"},
 				Value:       "",
-				Usage:       "scheduled query schedule",
+				Usage:       "notification destination pubsub topic",
 				Destination: &cfg.NotificationPubSubTopic,
+			},
+			&cli.BoolFlag{
+				Name:        "failureEmail",
+				Aliases:     []string{"em"},
+				Value:       false,
+				Usage:       "notification send email on failure (true/false)",
+				Destination: &cfg.NotificationSendEmail,
 			},
 		},
 	}

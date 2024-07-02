@@ -12,6 +12,7 @@ type CreateConfig struct {
 	Schedule                string
 	Disabled                bool
 	NotificationPubSubTopic string
+	NotificationSendEmail   bool
 
 	// TODO: add options available on google cloud console:
 	// repeatFrequency string

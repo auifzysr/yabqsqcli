@@ -38,6 +38,9 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		},
 		Schedule: cfg.Schedule,
 		Disabled: cfg.Disabled,
+		EmailPreferences: &datatransferpb.EmailPreferences{
+			EnableFailureEmail: cfg.NotificationSendEmail,
+		},
 	}
 
 	if cfg.NotificationPubSubTopic != "" {
