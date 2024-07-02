@@ -40,6 +40,18 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		Disabled: cfg.Disabled,
 	}
 
+	if cfg.NotificationPubSubTopic != "" {
+		topicName, err := (&domain.PubSubTopic{
+			ProjectID: cfg.ProjectID,
+			TopicID:   cfg.NotificationPubSubTopic,
+		}).Name()
+		if err != nil {
+			return nil, err
+
+		}
+		tc.NotificationPubsubTopic = topicName
+	}
+
 	return &datatransferpb.CreateTransferConfigRequest{
 		Parent:         p,
 		TransferConfig: tc,

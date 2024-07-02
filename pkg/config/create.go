@@ -5,12 +5,13 @@ func (*CreateConfig) configFunc() {}
 type CreateConfig struct {
 	*RootConfig
 
-	Name               string
-	DisplayName        string
-	DestinationDataset string
-	Query              string
-	Schedule           string
-	Disabled           bool
+	Name                    string
+	DisplayName             string
+	DestinationDataset      string
+	Query                   string
+	Schedule                string
+	Disabled                bool
+	NotificationPubSubTopic string
 
 	// TODO: add options available on google cloud console:
 	// repeatFrequency string
