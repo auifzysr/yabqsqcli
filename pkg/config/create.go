@@ -31,5 +31,6 @@ type CreateConfig struct {
 	// locationType string
 	// locationRegion string
 
+	// TODO: implement hereafter if needed
 	// encryptionKey string
 }
