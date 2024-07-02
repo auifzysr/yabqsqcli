@@ -2,6 +2,7 @@ package factory
 
 import (
 	"fmt"
+	"log"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
@@ -18,6 +19,8 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("cfg: %+v", cfg)
 
 	params, err := structpb.NewValue(cfg.Query)
 	if err != nil {
@@ -55,8 +58,14 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		tc.NotificationPubsubTopic = topicName
 	}
 
-	return &datatransferpb.CreateTransferConfigRequest{
+	req := &datatransferpb.CreateTransferConfigRequest{
 		Parent:         p,
 		TransferConfig: tc,
-	}, nil
+	}
+
+	if cfg.ServiceAccountEmail != "" {
+		req.ServiceAccountName = cfg.ServiceAccountEmail
+	}
+
+	return req, nil
 }

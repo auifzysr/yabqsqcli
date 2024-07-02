@@ -98,6 +98,13 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "notification send email on failure (true/false)",
 				Destination: &cfg.NotificationSendEmail,
 			},
+			&cli.StringFlag{
+				Name:        "serviceaccount",
+				Aliases:     []string{"sa"},
+				Value:       "",
+				Usage:       "service account email to run scheduled query",
+				Destination: &cfg.ServiceAccountEmail,
+			},
 		},
 	}
 }

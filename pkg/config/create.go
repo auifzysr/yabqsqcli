@@ -13,6 +13,7 @@ type CreateConfig struct {
 	Disabled                bool
 	NotificationPubSubTopic string
 	NotificationSendEmail   bool
+	ServiceAccountEmail     string
 
 	// TODO: add options available on google cloud console:
 	// repeatFrequency string
@@ -29,7 +30,7 @@ type CreateConfig struct {
 	// automaticLocationSelection bool
 	// locationType string
 	// locationRegion string
-	// serviceAccountEmail string
+
 	// encryptionKey string
 	// notificationSendEmailNotifications bool
 	// notificationSendCloudPubSubTopic string
