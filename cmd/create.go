@@ -31,6 +31,10 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 		RootConfig: rootCfg,
 	}
 
+	// FIXME: fully-named options located after alias options in arguments get emptied
+	// e.g. --destination "abcde" --d true --schedule "every 1 hours"
+	//                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+	//                                        &cfg.Schedule gets ""
 	return &cli.Command{
 		Name:  "create",
 		Usage: "create scheduled query config",
@@ -79,6 +83,13 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Value:       true,
 				Usage:       "scheduled query disabled",
 				Destination: &cfg.Disabled,
+			},
+			&cli.StringFlag{
+				Name:        "pubsubtopic",
+				Aliases:     []string{"pt"},
+				Value:       "",
+				Usage:       "scheduled query schedule",
+				Destination: &cfg.NotificationPubSubTopic,
 			},
 		},
 	}
