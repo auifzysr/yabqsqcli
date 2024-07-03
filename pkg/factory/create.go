@@ -8,6 +8,7 @@ import (
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.CreateTransferConfigRequest, error) {
@@ -44,6 +45,34 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		EmailPreferences: &datatransferpb.EmailPreferences{
 			EnableFailureEmail: cfg.NotificationSendEmail,
 		},
+	}
+
+	// TODO: test
+	if cfg.StartNow || cfg.StartTime != "" {
+		var seconds int64
+		var err error
+		if cfg.StartNow {
+			if cfg.StartTime != "" {
+				return nil, fmt.Errorf("options conflict: startnow and starttime are exclusive")
+			}
+			seconds, err = domain.TimestampSeconds("now")
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			if cfg.StartTime == "" {
+				return nil, fmt.Errorf("options conflict: startnow and starttime are exclusive")
+			}
+			seconds, err = domain.TimestampSeconds(cfg.StartTime)
+			if err != nil {
+				return nil, err
+			}
+		}
+		tc.ScheduleOptions = &datatransferpb.ScheduleOptions{
+			StartTime: &timestamppb.Timestamp{
+				Seconds: seconds,
+			},
+		}
 	}
 
 	if cfg.NotificationPubSubTopic != "" {

@@ -105,6 +105,20 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "service account email to run scheduled query",
 				Destination: &cfg.ServiceAccountEmail,
 			},
+			&cli.BoolFlag{
+				Name:        "startNow",
+				Aliases:     []string{"sn"},
+				Value:       false,
+				Usage:       "start now",
+				Destination: &cfg.StartNow,
+			},
+			&cli.StringFlag{
+				Name:        "startTime",
+				Aliases:     []string{"st"},
+				Value:       "",
+				Usage:       "start time",
+				Destination: &cfg.StartTime,
+			},
 		},
 	}
 }
