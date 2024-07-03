@@ -66,6 +66,24 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "scheduled query destination table ID",
 				Destination: &cfg.DestinationTableID,
 			},
+
+			// TODO: yet to test
+			&cli.StringFlag{
+				Name:        "destinationTablePartitioningField",
+				Aliases:     []string{"dpf"},
+				Value:       "",
+				Usage:       "destination table partitioning field",
+				Destination: &cfg.DestinationTablePartitioningField,
+			},
+
+			// TODO: yet to test
+			&cli.StringFlag{
+				Name:        "destinationTablePartitioningType",
+				Aliases:     []string{"dpt"},
+				Value:       "",
+				Usage:       "destination table partitioning type",
+				Destination: &cfg.DestinationTablePartitioningType,
+			},
 			&cli.StringFlag{
 				Name:        "writeDisposition",
 				Aliases:     []string{"wd"},
@@ -122,6 +140,8 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "end time",
 				Destination: &cfg.EndTime,
 			},
+
+			// TODO: yet to test
 			&cli.StringFlag{
 				Name:        "encryptionKeyRing",
 				Aliases:     []string{"kr"},
@@ -129,6 +149,8 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "encryption key ring",
 				Destination: &cfg.EncryptionKeyRing,
 			},
+
+			// TODO: yet to test
 			&cli.StringFlag{
 				Name:        "encryptionKey",
 				Aliases:     []string{"k"},
