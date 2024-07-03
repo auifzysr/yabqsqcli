@@ -16,18 +16,15 @@ type CreateConfig struct {
 	StartTime               string
 	EndTime                 string
 	DestinationTableID      string
+	WriteDisposition        string
 	EncryptionKeyRing       string
 	EncryptionKey           string
 
 	// TODO: add options available on google cloud console:
 
-	// destinationTableID string
 	// destinationTablePartitioningField string
-	// destinationTableWritePreference string
 	// automaticLocationSelection bool
 	// locationType string
 	// locationRegion string
 
-	// TODO: implement hereafter if needed
-	// encryptionKey string
 }
