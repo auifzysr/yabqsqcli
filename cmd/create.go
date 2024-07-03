@@ -67,6 +67,13 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Destination: &cfg.DestinationTableID,
 			},
 			&cli.StringFlag{
+				Name:        "writeDisposition",
+				Aliases:     []string{"wd"},
+				Value:       "",
+				Usage:       "write disposition",
+				Destination: &cfg.WriteDisposition,
+			},
+			&cli.StringFlag{
 				Name:        "schedule",
 				Aliases:     []string{"sch"},
 				Value:       "",

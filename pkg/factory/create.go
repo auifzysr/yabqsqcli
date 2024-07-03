@@ -57,6 +57,14 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		tc.Params.Fields["destination_table_name_template"] = destinationTableIDValue
 	}
 
+	if cfg.WriteDisposition != "" {
+		writeDispositionValue, err := structpb.NewValue(cfg.WriteDisposition)
+		if err != nil {
+			return nil, fmt.Errorf("invalid write disposition: %w", err)
+		}
+		tc.Params.Fields["write_disposition"] = writeDispositionValue
+	}
+
 	var schedule = &datatransferpb.ScheduleOptions{}
 	if cfg.StartTime != "" {
 		seconds, err := domain.TimestampSeconds(cfg.StartTime)
