@@ -39,13 +39,6 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:        "name",
-				Aliases:     []string{"n"},
-				Value:       "",
-				Usage:       "scheduled query name",
-				Destination: &cfg.Name,
-			},
-			&cli.StringFlag{
 				Name:        "displayName",
 				Aliases:     []string{"dn"},
 				Value:       "",
