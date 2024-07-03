@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	timeLayout = time.RFC3339
+)
+
 func TimestampSeconds(timeRepresentation string) (int64, error) {
 	if timeRepresentation == "" {
 		return 0, fmt.Errorf("time representation string cannot be empty")
@@ -13,9 +17,9 @@ func TimestampSeconds(timeRepresentation string) (int64, error) {
 		return time.Now().Unix(), nil
 	}
 
-	parsedTime, err := time.Parse(time.RFC3339, timeRepresentation)
+	parsedTime, err := time.Parse(timeLayout, timeRepresentation)
 	if err != nil {
-		return 0, fmt.Errorf("Error parsing time: %w", err)
+		return 0, fmt.Errorf("error parsing time: %w", err)
 	}
 
 	return parsedTime.Unix(), nil
