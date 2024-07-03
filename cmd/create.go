@@ -108,6 +108,13 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "start time",
 				Destination: &cfg.StartTime,
 			},
+			&cli.StringFlag{
+				Name:        "endTime",
+				Aliases:     []string{"et"},
+				Value:       "",
+				Usage:       "end time",
+				Destination: &cfg.EndTime,
+			},
 		},
 	}
 }

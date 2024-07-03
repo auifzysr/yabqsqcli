@@ -47,17 +47,26 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		},
 	}
 
+	var schedule = &datatransferpb.ScheduleOptions{}
 	if cfg.StartTime != "" {
 		seconds, err := domain.TimestampSeconds(cfg.StartTime)
 		if err != nil {
 			return nil, err
 		}
-		tc.ScheduleOptions = &datatransferpb.ScheduleOptions{
-			StartTime: &timestamppb.Timestamp{
-				Seconds: seconds,
-			},
+		schedule.StartTime = &timestamppb.Timestamp{
+			Seconds: seconds,
 		}
 	}
+	if cfg.EndTime != "" {
+		seconds, err := domain.TimestampSeconds(cfg.EndTime)
+		if err != nil {
+			return nil, err
+		}
+		schedule.EndTime = &timestamppb.Timestamp{
+			Seconds: seconds,
+		}
+	}
+	tc.ScheduleOptions = schedule
 
 	if cfg.NotificationPubSubTopic != "" {
 		topicName, err := (&domain.PubSubTopic{

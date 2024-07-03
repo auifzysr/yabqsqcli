@@ -15,6 +15,7 @@ type CreateConfig struct {
 	NotificationSendEmail   bool
 	ServiceAccountEmail     string
 	StartTime               string
+	EndTime                 string
 
 	// TODO: add options available on google cloud console:
 	// repeatFrequency string
