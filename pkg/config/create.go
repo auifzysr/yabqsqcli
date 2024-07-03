@@ -6,7 +6,7 @@ type CreateConfig struct {
 	*RootConfig
 
 	DisplayName             string
-	DestinationDataset      string
+	DestinationDatasetID    string
 	Query                   string
 	Schedule                string
 	Disabled                bool

@@ -53,11 +53,11 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Destination: &cfg.Query,
 			},
 			&cli.StringFlag{
-				Name:        "destination",
+				Name:        "destinationDatasetID",
 				Aliases:     []string{"dd"},
 				Value:       "",
-				Usage:       "scheduled query destination dataset",
-				Destination: &cfg.DestinationDataset,
+				Usage:       "scheduled query destination dataset ID",
+				Destination: &cfg.DestinationDatasetID,
 			},
 			&cli.StringFlag{
 				Name:        "schedule",
