@@ -25,10 +25,10 @@ func Run() error {
 	app := &cli.App{
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:        "projectID",
+				Name:        "project",
 				Aliases:     []string{"p"},
 				Value:       "",
-				Usage:       "projectID",
+				Usage:       "project ID",
 				Destination: &rootCfg.ProjectID,
 			},
 			&cli.StringFlag{

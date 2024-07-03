@@ -32,45 +32,46 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:  "create",
-		Usage: "create scheduled query config",
+		Name:    "create",
+		Aliases: []string{"c"},
+		Usage:   "create scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return create(cfg)
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:        "displayName",
-				Aliases:     []string{"dn"},
+				Name:        "name",
+				Aliases:     []string{"n"},
 				Value:       "",
-				Usage:       "scheduled query display name",
+				Usage:       "name",
 				Destination: &cfg.DisplayName,
 			},
 			&cli.StringFlag{
 				Name:        "query",
 				Aliases:     []string{"q"},
 				Value:       "",
-				Usage:       "scheduled query text",
+				Usage:       "query text",
 				Destination: &cfg.Query,
 			},
 			&cli.StringFlag{
-				Name:        "destinationDatasetID",
-				Aliases:     []string{"dd"},
+				Name:        "dataset",
+				Aliases:     []string{"d"},
 				Value:       "",
-				Usage:       "scheduled query destination dataset ID",
+				Usage:       "destination dataset",
 				Destination: &cfg.DestinationDatasetID,
 			},
 			&cli.StringFlag{
-				Name:        "destinationTableID",
-				Aliases:     []string{"dt"},
+				Name:        "table",
+				Aliases:     []string{"t"},
 				Value:       "",
-				Usage:       "scheduled query destination table ID",
+				Usage:       "destination table",
 				Destination: &cfg.DestinationTableID,
 			},
 
 			// TODO: yet to test
 			&cli.StringFlag{
-				Name:        "destinationTablePartitioningField",
-				Aliases:     []string{"dpf"},
+				Name:        "partitioning-field",
+				Aliases:     []string{"pf"},
 				Value:       "",
 				Usage:       "destination table partitioning field",
 				Destination: &cfg.DestinationTablePartitioningField,
@@ -78,63 +79,63 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 
 			// TODO: yet to test
 			&cli.StringFlag{
-				Name:        "destinationTablePartitioningType",
-				Aliases:     []string{"dpt"},
+				Name:        "partitioning-type",
+				Aliases:     []string{"pt"},
 				Value:       "",
 				Usage:       "destination table partitioning type",
 				Destination: &cfg.DestinationTablePartitioningType,
 			},
 			&cli.StringFlag{
-				Name:        "writeDisposition",
-				Aliases:     []string{"wd"},
+				Name:        "write-disposition",
+				Aliases:     []string{"w"},
 				Value:       "",
-				Usage:       "write disposition",
+				Usage:       "write disposition (WRITE_APPEND/ WRITE_TRUNCATE)",
 				Destination: &cfg.WriteDisposition,
 			},
 			&cli.StringFlag{
 				Name:        "schedule",
-				Aliases:     []string{"sch"},
+				Aliases:     []string{"s"},
 				Value:       "",
-				Usage:       "scheduled query schedule",
+				Usage:       "schedule",
 				Destination: &cfg.Schedule,
 			},
 			&cli.BoolFlag{
 				Name:        "disabled",
-				Aliases:     []string{"d"},
+				Aliases:     []string{"x"},
 				Value:       false,
-				Usage:       "scheduled query disabled",
+				Usage:       "disabled",
 				Destination: &cfg.Disabled,
 			},
 			&cli.StringFlag{
-				Name:        "pubsubtopic",
-				Aliases:     []string{"pt"},
+				Name:        "pubsub-topic",
+				Aliases:     []string{"ps"},
 				Value:       "",
 				Usage:       "notification destination pubsub topic",
 				Destination: &cfg.NotificationPubSubTopic,
 			},
 			&cli.BoolFlag{
-				Name:        "failureEmail",
-				Aliases:     []string{"em"},
+				Name:        "enable-email",
+				Aliases:     []string{"m"},
 				Value:       false,
-				Usage:       "notification send email on failure (true/false)",
+				Usage:       "notification send email on failure",
 				Destination: &cfg.NotificationSendEmail,
 			},
 			&cli.StringFlag{
-				Name:        "serviceaccount",
-				Aliases:     []string{"sa"},
+				Name:        "service-account",
+				Aliases:     []string{"a"},
 				Value:       "",
-				Usage:       "service account email to run scheduled query",
+				Usage:       "runner's service account email",
 				Destination: &cfg.ServiceAccountEmail,
 			},
 			&cli.StringFlag{
-				Name:        "startTime",
+				Name:        "start-time",
 				Aliases:     []string{"st"},
 				Value:       "",
 				Usage:       "start time",
 				Destination: &cfg.StartTime,
 			},
 			&cli.StringFlag{
-				Name:        "endTime",
+				Name:        "end-time",
 				Aliases:     []string{"et"},
 				Value:       "",
 				Usage:       "end time",
@@ -143,7 +144,7 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 
 			// TODO: yet to test
 			&cli.StringFlag{
-				Name:        "encryptionKeyRing",
+				Name:        "encryption-key-ring",
 				Aliases:     []string{"kr"},
 				Value:       "",
 				Usage:       "encryption key ring",
@@ -152,7 +153,7 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 
 			// TODO: yet to test
 			&cli.StringFlag{
-				Name:        "encryptionKey",
+				Name:        "encryption-key",
 				Aliases:     []string{"k"},
 				Value:       "",
 				Usage:       "encryption key",
