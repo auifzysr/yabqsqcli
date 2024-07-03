@@ -34,7 +34,7 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		DisplayName:  cfg.DisplayName,
 		DataSourceId: "scheduled_query",
 		Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-			DestinationDatasetId: cfg.DestinationDataset,
+			DestinationDatasetId: cfg.DestinationDatasetID,
 		},
 		Params: &structpb.Struct{
 			Fields: map[string]*structpb.Value{
