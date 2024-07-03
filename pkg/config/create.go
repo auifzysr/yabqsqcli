@@ -21,10 +21,7 @@ type CreateConfig struct {
 	EncryptionKey                     string
 
 	// TODO: add options available on google cloud console:
-
-	// destinationTablePartitioningField string
-	// automaticLocationSelection bool
-	// locationType string
-	// locationRegion string
-
+	// AutomaticLocationSelection bool
+	// LocationType string // Regional/ Multi-Regional
+	// LocationRegion string
 }
