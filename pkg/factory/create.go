@@ -28,8 +28,9 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		return nil, fmt.Errorf("invalid params: %w", err)
 	}
 
+	// TransferConfig has field "name" which is ignored when creating a transfer
+	// See details on the struct's source code
 	tc := &datatransferpb.TransferConfig{
-		Name:         cfg.Name,
 		DisplayName:  cfg.DisplayName,
 		DataSourceId: "scheduled_query",
 		Destination: &datatransferpb.TransferConfig_DestinationDatasetId{

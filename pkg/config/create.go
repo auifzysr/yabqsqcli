@@ -5,7 +5,6 @@ func (*CreateConfig) configFunc() {}
 type CreateConfig struct {
 	*RootConfig
 
-	Name                    string
 	DisplayName             string
 	DestinationDataset      string
 	Query                   string
@@ -18,13 +17,7 @@ type CreateConfig struct {
 	EndTime                 string
 
 	// TODO: add options available on google cloud console:
-	// repeatFrequency string
-	// repeatsEvery string
-	// startNow bool
-	// startAtSetTime bool
-	// startDateAndRunTime time.Time
-	// endNever bool
-	// scheduleEndTime time.Time
+
 	// destinationDatasetID string
 	// destinationTableID string
 	// destinationTablePartitioningField string
