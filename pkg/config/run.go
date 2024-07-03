@@ -7,4 +7,5 @@ type RunConfig struct {
 	DisplayName      string
 	Since            string
 	Until            string
+	At               string
 }

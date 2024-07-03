@@ -1,6 +1,8 @@
 package factory
 
 import (
+	"fmt"
+
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
@@ -42,6 +44,18 @@ func RunTransferConfigFactory(cfg *config.RunConfig) (*datatransferpb.StartManua
 				},
 			},
 		}
+	} else if cfg.At != "" {
+		t, err := domain.TimestampSeconds(cfg.At)
+		if err != nil {
+			return nil, err
+		}
+		req.Time = &datatransferpb.StartManualTransferRunsRequest_RequestedRunTime{
+			RequestedRunTime: &timestamppb.Timestamp{
+				Seconds: t,
+			},
+		}
+	} else {
+		return nil, fmt.Errorf("needs time parameters")
 	}
 
 	return req, nil
