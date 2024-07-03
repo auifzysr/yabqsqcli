@@ -16,6 +16,8 @@ type CreateConfig struct {
 	StartTime               string
 	EndTime                 string
 	DestinationTableID      string
+	EncryptionKeyRing       string
+	EncryptionKey           string
 
 	// TODO: add options available on google cloud console:
 

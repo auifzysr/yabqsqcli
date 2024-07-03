@@ -115,6 +115,20 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Usage:       "end time",
 				Destination: &cfg.EndTime,
 			},
+			&cli.StringFlag{
+				Name:        "encryptionKeyRing",
+				Aliases:     []string{"kr"},
+				Value:       "",
+				Usage:       "encryption key ring",
+				Destination: &cfg.EncryptionKeyRing,
+			},
+			&cli.StringFlag{
+				Name:        "encryptionKey",
+				Aliases:     []string{"k"},
+				Value:       "",
+				Usage:       "encryption key",
+				Destination: &cfg.EncryptionKey,
+			},
 		},
 	}
 }

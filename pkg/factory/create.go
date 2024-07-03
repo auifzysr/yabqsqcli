@@ -9,6 +9,7 @@ import (
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.CreateTransferConfigRequest, error) {
@@ -96,6 +97,24 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 
 	if cfg.ServiceAccountEmail != "" {
 		req.ServiceAccountName = cfg.ServiceAccountEmail
+	}
+
+	if cfg.EncryptionKeyRing != "" && cfg.EncryptionKey != "" {
+		k, err := (&domain.KMS{
+			ProjectID: cfg.ProjectID,
+			Location:  cfg.Region,
+			KeyRing:   cfg.EncryptionKeyRing,
+			Key:       cfg.EncryptionKey,
+		}).ResourceID()
+		if err != nil {
+			return nil, err
+		}
+		ec := &datatransferpb.EncryptionConfiguration{
+			KmsKeyName: &wrapperspb.StringValue{
+				Value: k,
+			},
+		}
+		tc.EncryptionConfiguration = ec
 	}
 
 	return req, nil
