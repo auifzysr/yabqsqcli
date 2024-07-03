@@ -14,7 +14,6 @@ type CreateConfig struct {
 	NotificationPubSubTopic string
 	NotificationSendEmail   bool
 	ServiceAccountEmail     string
-	StartNow                bool
 	StartTime               string
 
 	// TODO: add options available on google cloud console:
