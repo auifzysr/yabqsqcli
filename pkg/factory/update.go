@@ -10,6 +10,7 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
+// TODO: not working
 func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.UpdateTransferConfigRequest, error) {
 	tcs := &domain.TransferConfigsPathSpec{
 		ProjectID: cfg.ProjectID,
@@ -30,7 +31,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		DisplayName:  cfg.DisplayName,
 		DataSourceId: "scheduled_query",
 		Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-			DestinationDatasetId: cfg.DestinationDataset,
+			DestinationDatasetId: cfg.DestinationDatasetID,
 		},
 		Params: &structpb.Struct{
 			Fields: map[string]*structpb.Value{
