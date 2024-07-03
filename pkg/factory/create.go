@@ -47,26 +47,10 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		},
 	}
 
-	// TODO: test
-	if cfg.StartNow || cfg.StartTime != "" {
-		var seconds int64
-		var err error
-		if cfg.StartNow {
-			if cfg.StartTime != "" {
-				return nil, fmt.Errorf("options conflict: startnow and starttime are exclusive")
-			}
-			seconds, err = domain.TimestampSeconds("now")
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			if cfg.StartTime == "" {
-				return nil, fmt.Errorf("options conflict: startnow and starttime are exclusive")
-			}
-			seconds, err = domain.TimestampSeconds(cfg.StartTime)
-			if err != nil {
-				return nil, err
-			}
+	if cfg.StartTime != "" {
+		seconds, err := domain.TimestampSeconds(cfg.StartTime)
+		if err != nil {
+			return nil, err
 		}
 		tc.ScheduleOptions = &datatransferpb.ScheduleOptions{
 			StartTime: &timestamppb.Timestamp{
