@@ -22,3 +22,5 @@ func InitClient(ctx context.Context) (*Client, error) {
 func (c *Client) Close() {
 	c.Client.Close()
 }
+
+// DataTransferServiceClient in datatransfer.pb.go has an entrypoint to look into the library
