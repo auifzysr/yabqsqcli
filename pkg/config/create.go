@@ -15,10 +15,10 @@ type CreateConfig struct {
 	ServiceAccountEmail     string
 	StartTime               string
 	EndTime                 string
+	DestinationTableID      string
 
 	// TODO: add options available on google cloud console:
 
-	// destinationDatasetID string
 	// destinationTableID string
 	// destinationTablePartitioningField string
 	// destinationTableWritePreference string

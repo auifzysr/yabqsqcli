@@ -48,6 +48,14 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		},
 	}
 
+	if cfg.DestinationTableID != "" {
+		destinationTableIDValue, err := structpb.NewValue(cfg.DestinationTableID)
+		if err != nil {
+			return nil, fmt.Errorf("invalid destination_table_id: %w", err)
+		}
+		tc.Params.Fields["destination_table_name_template"] = destinationTableIDValue
+	}
+
 	var schedule = &datatransferpb.ScheduleOptions{}
 	if cfg.StartTime != "" {
 		seconds, err := domain.TimestampSeconds(cfg.StartTime)
