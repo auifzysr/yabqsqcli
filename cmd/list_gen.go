@@ -37,8 +37,8 @@ func listCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:  "list",
-		Usage: "list scheduled query config",
+		Name:        "list",
+		Description: "list scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return list(cfg)
 		},

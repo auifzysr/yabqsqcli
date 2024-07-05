@@ -34,8 +34,8 @@ func deleteCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:  "delete",
-		Usage: "delete scheduled query config",
+		Name:        "delete",
+		Description: "delete scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return delete(cfg)
 		},

@@ -35,8 +35,8 @@ func getCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:  "get",
-		Usage: "get scheduled query config",
+		Name:        "get",
+		Description: "get scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return get(cfg)
 		},
