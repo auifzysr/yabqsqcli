@@ -46,10 +46,21 @@ var configs = []struct {
 			"config-id",
 			"name"},
 	},
-	// {
-	// 	Name:    "list",
-	// 	Options: []string{},
-	// },
+	{
+		Name: "list",
+		ClientCallTemplate: `
+	itr := client.ListTransferConfigs(ctx, tc)
+	for {
+		c, err := itr.Next()
+		if err != nil {
+			fmt.Printf("EOL or failed to iterate response: %s", err)
+			break
+		}
+		fmt.Printf("config: %+v\n", c)
+	}
+`,
+		Options: []string{},
+	},
 	{
 		Name: "run",
 		ClientCallTemplate: `
