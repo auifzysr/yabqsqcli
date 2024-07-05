@@ -38,7 +38,7 @@ func {{ .Name }}Command(rootCfg *config.RootConfig) *cli.Command {
 
 	return &cli.Command{
 		Name:    "{{ .Name }}",
-		Aliases: []string{"c"},
+		Aliases: []string{"{{ .Name | head }}"},
 		Usage:   "{{ .Name }} scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return {{ .Name }}(cfg)

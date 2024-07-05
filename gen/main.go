@@ -19,6 +19,10 @@ func capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
+func head(s string) string {
+	return s[0:1]
+}
+
 func main() {
 	for _, cfg := range configs {
 		var flagString string
@@ -29,6 +33,7 @@ func main() {
 		fn := fmt.Sprintf("../cmd/%s_gen.go", cfg.Name)
 		funcMap := template.FuncMap{
 			"capitalize": capitalize,
+			"head":       head,
 		}
 		t := template.Must(template.New("gen").Funcs(funcMap).Parse(cmdTemplate))
 		buf := &bytes.Buffer{}
