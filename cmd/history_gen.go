@@ -37,8 +37,8 @@ func historyCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:  "history",
-		Usage: "history scheduled query config",
+		Name:        "history",
+		Description: "history scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return history(cfg)
 		},
