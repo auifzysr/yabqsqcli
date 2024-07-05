@@ -1,12 +1,14 @@
 package main
 
 var configs = []struct {
-	Name         string
-	Options      []string
-	FlagTemplate string
+	Name               string
+	ClientCallFuncName string
+	Options            []string
+	FlagTemplate       string
 }{
 	{
-		Name: "get",
+		Name:               "get",
+		ClientCallFuncName: "GetTransferConfig",
 		Options: []string{
 			"config-id",
 			"name",
@@ -29,16 +31,17 @@ var configs = []struct {
 	// 	Name:    "list",
 	// 	Options: []string{},
 	// },
-	// {
-	// 	Name: "run",
-	// 	Options: []string{
-	// 		"config-id",
-	// 		"name",
-	// 		"since",
-	// 		"until",
-	// 		"at",
-	// 	},
-	// },
+	{
+		Name:               "run",
+		ClientCallFuncName: "StartManualTransferRuns",
+		Options: []string{
+			"config-id",
+			"name",
+			"since",
+			"until",
+			"at",
+		},
+	},
 	// {
 	// 	Name: "update",
 	// 	Options: []string{
@@ -61,7 +64,8 @@ var configs = []struct {
 	// 	},
 	// },
 	{
-		Name: "create",
+		Name:               "create",
+		ClientCallFuncName: "CreateTransferConfig",
 		Options: []string{
 			"name",
 			"query",

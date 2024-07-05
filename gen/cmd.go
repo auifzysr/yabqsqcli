@@ -21,7 +21,7 @@ func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
 	}
 	ctx := context.Background()
 
-	m, err := client.{{ .Name | capitalize }}TransferConfig(ctx, tc)
+	m, err := client.{{ .ClientCallFuncName }}(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("{{ .Name }} transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
 			cfg.ProjectID, cfg.Region,
