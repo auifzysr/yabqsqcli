@@ -22,13 +22,21 @@ var configs = []struct {
 			"name",
 		},
 	},
-	// {
-	// 	Name: "delete",
-	// 	Options: []string{
-	// 		"config-id",
-	// 		"name",
-	// 	},
-	// },
+	{
+		Name: "delete",
+		ClientCallTemplate: `
+	err = client.DeleteTransferConfig(ctx, tc)
+	if err != nil {
+		return fmt.Errorf("deleting transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+			cfg.ProjectID, cfg.Region,
+		), err)
+	}
+`,
+		Options: []string{
+			"config-id",
+			"name",
+		},
+	},
 	{
 		Name: "history",
 		ClientCallTemplate: `
@@ -44,7 +52,8 @@ var configs = []struct {
 `,
 		Options: []string{
 			"config-id",
-			"name"},
+			"name",
+		},
 	},
 	{
 		Name: "list",
