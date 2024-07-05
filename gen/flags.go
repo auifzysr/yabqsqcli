@@ -1,164 +1,142 @@
-package cmd
+package main
 
-import (
-	"context"
-	"fmt"
-
-	"github.com/auifzysr/yabqsqcli/pkg/config"
-	"github.com/auifzysr/yabqsqcli/pkg/factory"
-	"github.com/urfave/cli/v2"
-)
-
-func create(cfg *config.CreateConfig) error {
-	tc, err := factory.CreateTransferConfigFactory(cfg)
-	if err != nil {
-		return err
-	}
-	ctx := context.Background()
-
-	m, err := client.CreateTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("creating transfer failed: parent: %s, %w", fmt.Sprintf(`projects/%s/locations/%s`,
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-	fmt.Printf("meta: %+v", m)
-	return nil
-}
-
-func createCommand(rootCfg *config.RootConfig) *cli.Command {
-	cfg := &config.CreateConfig{
-		RootConfig: rootCfg,
-	}
-
-	return &cli.Command{
-		Name:    "create",
-		Aliases: []string{"c"},
-		Usage:   "create scheduled query config",
-		Action: func(cCtx *cli.Context) error {
-			return create(cfg)
-		},
-		Flags: []cli.Flag{
-			&cli.StringFlag{
+var flagTemplates = map[string]string{
+	"name": `&cli.StringFlag{
 				Name:        "name",
 				Aliases:     []string{"n"},
 				Value:       "",
 				Usage:       "name",
 				Destination: &cfg.DisplayName,
-			},
-			&cli.StringFlag{
+			},`,
+	"config-id": `&cli.StringFlag{
+				Name:        "config-id",
+				Aliases:     []string{"c"},
+				Value:       "",
+				Usage:       "transfer config ID",
+				Destination: &cfg.TransferConfigID,
+			},`,
+	"since": `&cli.StringFlag{
+				Name:        "since",
+				Aliases:     []string{"s"},
+				Value:       "",
+				Usage:       "since what past time running scheduled query, must be with --until in RFC3339",
+				Destination: &cfg.Since,
+			},`,
+	"until": `&cli.StringFlag{
+				Name:        "until",
+				Aliases:     []string{"u"},
+				Value:       "",
+				Usage:       "until what past time running scheduled query, must be with --since in RFC3339",
+				Destination: &cfg.Until,
+			},`,
+	"at": `&cli.StringFlag{
+				Name:        "at",
+				Aliases:     []string{"a"},
+				Value:       "",
+				Usage:       "at what time running scheduled query, in RFC3339",
+				Destination: &cfg.At,
+			},`,
+	"query": `&cli.StringFlag{
 				Name:        "query",
 				Aliases:     []string{"q"},
 				Value:       "",
 				Usage:       "query text",
 				Destination: &cfg.Query,
-			},
-			&cli.StringFlag{
+			},`,
+	"dataset": `&cli.StringFlag{
 				Name:        "dataset",
 				Aliases:     []string{"d"},
 				Value:       "",
 				Usage:       "destination dataset",
 				Destination: &cfg.DestinationDatasetID,
-			},
-			&cli.StringFlag{
+			},`,
+	"table": `&cli.StringFlag{
 				Name:        "table",
 				Aliases:     []string{"t"},
 				Value:       "",
 				Usage:       "destination table",
 				Destination: &cfg.DestinationTableID,
-			},
-
-			// TODO: yet to test
-			&cli.StringFlag{
+			},`,
+	"partitioning-field": `&cli.StringFlag{
 				Name:        "partitioning-field",
 				Aliases:     []string{"pf"},
 				Value:       "",
 				Usage:       "destination table partitioning field",
 				Destination: &cfg.DestinationTablePartitioningField,
-			},
-
-			// TODO: yet to test
-			&cli.StringFlag{
+			},`,
+	"partitioning-type": `&cli.StringFlag{
 				Name:        "partitioning-type",
 				Aliases:     []string{"pt"},
 				Value:       "",
 				Usage:       "destination table partitioning type",
-				Destination: &cfg.DestinationTablePartitioningType,
-			},
-			&cli.StringFlag{
+				Destination: &cfg.DestinationTablePartitioningField,
+			},`,
+	"write-disposition": `&cli.StringFlag{
 				Name:        "write-disposition",
-				Aliases:     []string{"w"},
+				Aliases:     []string{"wd"},
 				Value:       "",
 				Usage:       "write disposition (WRITE_APPEND/ WRITE_TRUNCATE)",
 				Destination: &cfg.WriteDisposition,
-			},
-			&cli.StringFlag{
+			},`,
+	"schedule": `&cli.StringFlag{
 				Name:        "schedule",
 				Aliases:     []string{"s"},
 				Value:       "",
 				Usage:       "schedule",
 				Destination: &cfg.Schedule,
-			},
-			&cli.BoolFlag{
+			},`,
+	"disabled": `&cli.BoolFlag{
 				Name:        "disabled",
 				Aliases:     []string{"x"},
-				Value:       false,
 				Usage:       "disabled",
 				Destination: &cfg.Disabled,
-			},
-			&cli.StringFlag{
+			},`,
+	"pubsub-topic": `&cli.StringFlag{
 				Name:        "pubsub-topic",
-				Aliases:     []string{"ps"},
+				Aliases:     []string{"pst"},
 				Value:       "",
 				Usage:       "notification destination pubsub topic",
 				Destination: &cfg.NotificationPubSubTopic,
-			},
-			&cli.BoolFlag{
+			},`,
+	"enable-email": `&cli.BoolFlag{
 				Name:        "enable-email",
-				Aliases:     []string{"m"},
-				Value:       false,
+				Aliases:     []string{"ee"},
 				Usage:       "notification send email on failure",
 				Destination: &cfg.NotificationSendEmail,
-			},
-			&cli.StringFlag{
+			},`,
+	"service-account": `&cli.StringFlag{
 				Name:        "service-account",
-				Aliases:     []string{"a"},
+				Aliases:     []string{"sa"},
 				Value:       "",
 				Usage:       "runner's service account email",
 				Destination: &cfg.ServiceAccountEmail,
-			},
-			&cli.StringFlag{
+			},`,
+	"start-time": `&cli.StringFlag{
 				Name:        "start-time",
 				Aliases:     []string{"st"},
 				Value:       "",
 				Usage:       "start time",
 				Destination: &cfg.StartTime,
-			},
-			&cli.StringFlag{
+			},`,
+	"end-time": `&cli.StringFlag{
 				Name:        "end-time",
 				Aliases:     []string{"et"},
 				Value:       "",
 				Usage:       "end time",
 				Destination: &cfg.EndTime,
-			},
-
-			// TODO: yet to test
-			&cli.StringFlag{
+			},`,
+	"encryption-key-ring": `&cli.StringFlag{
 				Name:        "encryption-key-ring",
 				Aliases:     []string{"kr"},
 				Value:       "",
 				Usage:       "encryption key ring",
 				Destination: &cfg.EncryptionKeyRing,
-			},
-
-			// TODO: yet to test
-			&cli.StringFlag{
+			},`,
+	"encryption-key": `&cli.StringFlag{
 				Name:        "encryption-key",
 				Aliases:     []string{"k"},
 				Value:       "",
 				Usage:       "encryption key",
 				Destination: &cfg.EncryptionKey,
-			},
-		},
-	}
+			},`,
 }
