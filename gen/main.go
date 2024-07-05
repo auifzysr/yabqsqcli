@@ -44,6 +44,6 @@ func main() {
 		if err := os.WriteFile(fn, buf.Bytes(), 0644); err != nil {
 			log.Fatalf("failed to write %s: %v", fn, err)
 		}
-		log.Println("generated %s", fn)
+		log.Printf("generated %s\n", fn)
 	}
 }
