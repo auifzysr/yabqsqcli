@@ -25,6 +25,7 @@ func create(cfg *config.CreateConfig) error {
 		), err)
 	}
 	fmt.Printf("meta: %+v", m)
+
 	return nil
 }
 
@@ -34,9 +35,8 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:    "create",
-		Aliases: []string{"c"},
-		Usage:   "create scheduled query config",
+		Name:  "create",
+		Usage: "create scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return create(cfg)
 		},

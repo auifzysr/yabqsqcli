@@ -21,13 +21,8 @@ func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
 	}
 	ctx := context.Background()
 
-	m, err := client.{{ .ClientCallFuncName }}(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("{{ .Name }} transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-	fmt.Printf("meta: %+v", m)
+	{{ .ClientCallTemplate }}
+
 	return nil
 }
 
@@ -38,7 +33,6 @@ func {{ .Name }}Command(rootCfg *config.RootConfig) *cli.Command {
 
 	return &cli.Command{
 		Name:    "{{ .Name }}",
-		Aliases: []string{"{{ .Name | head }}"},
 		Usage:   "{{ .Name }} scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return {{ .Name }}(cfg)

@@ -25,6 +25,7 @@ func get(cfg *config.GetConfig) error {
 		), err)
 	}
 	fmt.Printf("meta: %+v", m)
+
 	return nil
 }
 
@@ -34,9 +35,8 @@ func getCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:    "get",
-		Aliases: []string{"g"},
-		Usage:   "get scheduled query config",
+		Name:  "get",
+		Usage: "get scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return get(cfg)
 		},

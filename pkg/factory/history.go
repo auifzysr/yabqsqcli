@@ -6,7 +6,7 @@ import (
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 )
 
-func HistoryConfigFactory(cfg *config.HistoryConfig) (*datatransferpb.ListTransferRunsRequest, error) {
+func HistoryTransferConfigFactory(cfg *config.HistoryConfig) (*datatransferpb.ListTransferRunsRequest, error) {
 	// TODO: resolve TransferConfigID by DisplayName
 	tcs := &domain.TransferConfigsPathSpec{
 		ProjectID: cfg.ProjectID,
