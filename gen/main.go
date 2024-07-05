@@ -24,11 +24,11 @@ func head(s string) string {
 }
 
 func main() {
-	for _, cfg := range configs {
+	for _, cfg := range scenarios {
 		// generate cmd/*_gen.go
 		var flagString string
 		for _, opt := range cfg.Options {
-			flagString += params[opt].flagDefinitionTemplate + "\n"
+			flagString += fieldParams[opt].flagDefinitionTemplate + "\n"
 		}
 		cfg.FlagTemplate = flagString
 		fn := fmt.Sprintf("../cmd/%s_gen.go", cfg.Name)
@@ -48,11 +48,11 @@ func main() {
 		log.Printf("generated %s\n", fn)
 
 	}
-	for _, cfg := range configs {
+	for _, cfg := range scenarios {
 		// generate pkg/config/*_gen.go
 		var fieldString string
 		for _, opt := range cfg.Options {
-			fieldString += params[opt].fieldDefinitionTemplate + "\n"
+			fieldString += fieldParams[opt].fieldDefinitionTemplate + "\n"
 		}
 		cfg.FieldDefinitions = fieldString
 		fn := fmt.Sprintf("../pkg/config/%s_gen.go", cfg.Name)

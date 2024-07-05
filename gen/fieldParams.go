@@ -1,12 +1,12 @@
 package main
 
-type param struct {
+type fieldParam struct {
 	name                    string
 	fieldDefinitionTemplate string
 	flagDefinitionTemplate  string
 }
 
-var params = map[string]param{
+var fieldParams = map[string]fieldParam{
 	"name": {
 		name:                    "name",
 		fieldDefinitionTemplate: "DisplayName string",
