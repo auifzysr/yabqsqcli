@@ -27,7 +27,7 @@ func main() {
 	for _, cfg := range configs {
 		var flagString string
 		for _, opt := range cfg.Options {
-			flagString += flagTemplates[opt] + "\n"
+			flagString += params[opt].flagDefinitionTemplate + "\n"
 		}
 		cfg.FlagTemplate = flagString
 		fn := fmt.Sprintf("../cmd/%s_gen.go", cfg.Name)
