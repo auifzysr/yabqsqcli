@@ -5,6 +5,7 @@ var configs = []struct {
 	ClientCallTemplate string
 	Options            []string
 	FlagTemplate       string
+	FieldDefinitions   string
 }{
 	{
 		Name: "get",
@@ -96,12 +97,13 @@ var configs = []struct {
 	if err != nil {
 		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
 			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
-				cfg.ProjectID, cfg.Region, cfg.ConfigID), err)
+				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
 	}
 	fmt.Printf("meta: %+v", m)
 `,
 		Options: []string{
 			"name",
+			"config-id",
 			"query",
 			"dataset",
 			"table",

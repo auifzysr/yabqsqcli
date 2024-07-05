@@ -22,7 +22,7 @@ func update(cfg *config.UpdateConfig) error {
 	if err != nil {
 		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
 			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
-				cfg.ProjectID, cfg.Region, cfg.ConfigID), err)
+				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
 	}
 	fmt.Printf("meta: %+v", m)
 
@@ -47,6 +47,13 @@ func updateCommand(rootCfg *config.RootConfig) *cli.Command {
 				Value:       "",
 				Usage:       "name",
 				Destination: &cfg.DisplayName,
+			},
+			&cli.StringFlag{
+				Name:        "config-id",
+				Aliases:     []string{"c"},
+				Value:       "",
+				Usage:       "transfer config ID",
+				Destination: &cfg.TransferConfigID,
 			},
 			&cli.StringFlag{
 				Name:        "query",
