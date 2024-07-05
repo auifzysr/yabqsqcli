@@ -15,7 +15,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 	tcs := &domain.TransferConfigsPathSpec{
 		ProjectID: cfg.ProjectID,
 		Location:  cfg.Region,
-		ID:        cfg.ConfigID,
+		ID:        cfg.TransferConfigID,
 	}
 	n, err := tcs.Name()
 	if err != nil {
