@@ -1,6 +1,6 @@
 package main
 
-var configs = []struct {
+var scenarios = []struct {
 	Name               string
 	ClientCallTemplate string
 	Options            []string
