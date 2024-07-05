@@ -89,27 +89,36 @@ var configs = []struct {
 			"at",
 		},
 	},
-	// {
-	// 	Name: "update",
-	// 	Options: []string{
-	// 		"name",
-	// 		"query",
-	// 		"dataset",
-	// 		"table",
-	// 		"partitioning-field",
-	// 		"partitioning-type",
-	// 		"write-disposition",
-	// 		"schedule",
-	// 		"disabled",
-	// 		"pubsub-topic",
-	// 		"enable-email",
-	// 		"service-account",
-	// 		"start-time",
-	// 		"end-time",
-	// 		"encryption-key-ring",
-	// 		"encryption-key",
-	// 	},
-	// },
+	{
+		Name: "update",
+		ClientCallTemplate: `
+	m, err := client.UpdateTransferConfig(ctx, tc)
+	if err != nil {
+		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
+			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
+				cfg.ProjectID, cfg.Region, cfg.ConfigID), err)
+	}
+	fmt.Printf("meta: %+v", m)
+`,
+		Options: []string{
+			"name",
+			"query",
+			"dataset",
+			"table",
+			"partitioning-field",
+			"partitioning-type",
+			"write-disposition",
+			"schedule",
+			"disabled",
+			"pubsub-topic",
+			"enable-email",
+			"service-account",
+			"start-time",
+			"end-time",
+			"encryption-key-ring",
+			"encryption-key",
+		},
+	},
 	{
 		Name: "create",
 		ClientCallTemplate: `
