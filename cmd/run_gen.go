@@ -25,6 +25,7 @@ func run(cfg *config.RunConfig) error {
 		), err)
 	}
 	fmt.Printf("meta: %+v", m)
+
 	return nil
 }
 
@@ -34,9 +35,8 @@ func runCommand(rootCfg *config.RootConfig) *cli.Command {
 	}
 
 	return &cli.Command{
-		Name:    "run",
-		Aliases: []string{"r"},
-		Usage:   "run scheduled query config",
+		Name:  "run",
+		Usage: "run scheduled query config",
 		Action: func(cCtx *cli.Context) error {
 			return run(cfg)
 		},
