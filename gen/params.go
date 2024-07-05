@@ -42,7 +42,7 @@ var params = map[string]param{
 	},
 	"until": {
 		name:                    "until",
-		fieldDefinitionTemplate: "Unitl string",
+		fieldDefinitionTemplate: "Until string",
 		flagDefinitionTemplate: `&cli.StringFlag{
 				Name:        "until",
 				Aliases:     []string{"u"},

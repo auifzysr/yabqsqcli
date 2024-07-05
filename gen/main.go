@@ -25,6 +25,7 @@ func head(s string) string {
 
 func main() {
 	for _, cfg := range configs {
+		// generate cmd/*_gen.go
 		var flagString string
 		for _, opt := range cfg.Options {
 			flagString += params[opt].flagDefinitionTemplate + "\n"
@@ -35,7 +36,30 @@ func main() {
 			"capitalize": capitalize,
 			"head":       head,
 		}
-		t := template.Must(template.New("gen").Funcs(funcMap).Parse(cmdTemplate))
+		t := template.Must(template.New("cmd").Funcs(funcMap).Parse(cmdTemplate))
+		buf := &bytes.Buffer{}
+		if err := t.Execute(buf, cfg); err != nil {
+			log.Fatalf("failed to execute template: %v", err)
+		}
+
+		if err := os.WriteFile(fn, buf.Bytes(), 0644); err != nil {
+			log.Fatalf("failed to write %s: %v", fn, err)
+		}
+		log.Printf("generated %s\n", fn)
+
+	}
+	for _, cfg := range configs {
+		// generate pkg/config/*_gen.go
+		var fieldString string
+		for _, opt := range cfg.Options {
+			fieldString += params[opt].fieldDefinitionTemplate + "\n"
+		}
+		cfg.FieldDefinitions = fieldString
+		fn := fmt.Sprintf("../pkg/config/%s_gen.go", cfg.Name)
+		funcMap := template.FuncMap{
+			"capitalize": capitalize,
+		}
+		t := template.Must(template.New("config").Funcs(funcMap).Parse(configTemplate))
 		buf := &bytes.Buffer{}
 		if err := t.Execute(buf, cfg); err != nil {
 			log.Fatalf("failed to execute template: %v", err)
