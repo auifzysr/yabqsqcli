@@ -47,6 +47,13 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "display_name")
 	}
 
+	if cfg.DestinationDatasetID != "" {
+		tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
+			DestinationDatasetId: cfg.DestinationDatasetID,
+		}
+		fieldMaskPaths = append(fieldMaskPaths, "destination_dataset_id")
+	}
+
 	// TransferConfig works as proto.Message
 	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
 	if err != nil {
