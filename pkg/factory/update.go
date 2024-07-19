@@ -8,6 +8,7 @@ import (
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.UpdateTransferConfigRequest, error) {
@@ -95,6 +96,32 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		tc.Params.Fields["write_disposition"] = writeDispositionValue
 
 		fieldMaskPaths = append(fieldMaskPaths, "params")
+	}
+
+	// TODO: updating starttime or endtime without
+	// specifying the other nullifies the unspecified
+	tc.ScheduleOptions = &datatransferpb.ScheduleOptions{}
+	if cfg.StartTime != "" {
+		seconds, err := domain.TimestampSeconds(cfg.StartTime)
+		if err != nil {
+			return nil, err
+		}
+		tc.ScheduleOptions.StartTime = &timestamppb.Timestamp{
+			Seconds: seconds,
+		}
+
+		fieldMaskPaths = append(fieldMaskPaths, "schedule_options")
+	}
+	if cfg.EndTime != "" {
+		seconds, err := domain.TimestampSeconds(cfg.EndTime)
+		if err != nil {
+			return nil, err
+		}
+		tc.ScheduleOptions.EndTime = &timestamppb.Timestamp{
+			Seconds: seconds,
+		}
+
+		fieldMaskPaths = append(fieldMaskPaths, "schedule_options")
 	}
 
 	// TransferConfig works as proto.Message
