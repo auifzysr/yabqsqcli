@@ -87,6 +87,16 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
 
+	if cfg.WriteDisposition != "" {
+		writeDispositionValue, err := structpb.NewValue(cfg.WriteDisposition)
+		if err != nil {
+			return nil, fmt.Errorf("invalid write disposition: %w", err)
+		}
+		tc.Params.Fields["write_disposition"] = writeDispositionValue
+
+		fieldMaskPaths = append(fieldMaskPaths, "params")
+	}
+
 	// TransferConfig works as proto.Message
 	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
 	if err != nil {
