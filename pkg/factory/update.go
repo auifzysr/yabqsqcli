@@ -9,6 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.UpdateTransferConfigRequest, error) {
@@ -136,6 +137,27 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		tc.NotificationPubsubTopic = topicName
 
 		fieldMaskPaths = append(fieldMaskPaths, "notification_pubsub_topic")
+	}
+
+	// TODO: yet to be tested with the Google Cloud's API
+	if cfg.EncryptionKeyRing != "" && cfg.EncryptionKey != "" {
+		k, err := (&domain.KMS{
+			ProjectID: cfg.ProjectID,
+			Location:  cfg.Region,
+			KeyRing:   cfg.EncryptionKeyRing,
+			Key:       cfg.EncryptionKey,
+		}).ResourceID()
+		if err != nil {
+			return nil, err
+		}
+		ec := &datatransferpb.EncryptionConfiguration{
+			KmsKeyName: &wrapperspb.StringValue{
+				Value: k,
+			},
+		}
+		tc.EncryptionConfiguration = ec
+
+		fieldMaskPaths = append(fieldMaskPaths, "encryption_configuration")
 	}
 
 	// TransferConfig works as proto.Message
