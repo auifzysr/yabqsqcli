@@ -54,6 +54,22 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "destination_dataset_id")
 	}
 
+	if cfg.DestinationTableID != "" {
+		destinationTableIDValue, err := structpb.NewValue(cfg.DestinationTableID)
+		if err != nil {
+			return nil, fmt.Errorf("invalid destination_table_id: %w", err)
+		}
+		if tc.Params == nil {
+			tc.Params = &structpb.Struct{
+				Fields: map[string]*structpb.Value{
+					"destination_table_name_template": destinationTableIDValue,
+				},
+			}
+		} else {
+			tc.Params.Fields["destination_table_name_template"] = destinationTableIDValue
+		}
+	}
+
 	// TransferConfig works as proto.Message
 	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
 	if err != nil {
