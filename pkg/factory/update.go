@@ -125,6 +125,11 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "schedule_options")
 	}
 
+	if cfg.Schedule != "" {
+		tc.Schedule = cfg.Schedule
+		fieldMaskPaths = append(fieldMaskPaths, "schedule")
+	}
+
 	if cfg.NotificationPubSubTopic != "" {
 		topicName, err := (&domain.PubSubTopic{
 			ProjectID: cfg.ProjectID,
