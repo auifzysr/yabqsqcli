@@ -61,8 +61,10 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 			return nil, fmt.Errorf("invalid destination_table_id: %w", err)
 		}
 		tc.Params.Fields["destination_table_name_template"] = destinationTableIDValue
+		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
 
+	// TODO: not working
 	// params available can be found at:
 	// https://cloud.google.com/bigquery/docs/working-with-transfers#update_a_transfer
 	if cfg.DestinationTablePartitioningField != "" && cfg.DestinationTablePartitioningType != "" {
@@ -81,6 +83,8 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 			}
 			tc.Params.Fields["partitioning_type"] = v
 		}
+
+		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
 
 	// TransferConfig works as proto.Message
