@@ -144,8 +144,17 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		return nil, fmt.Errorf("invalid fieldmask: %w", err)
 	}
 
-	return &datatransferpb.UpdateTransferConfigRequest{
+	// >> UpdateTransferConfig updates a data transfer configuration.
+	// >> All fields must be set, even if they are not updated.
+	req := &datatransferpb.UpdateTransferConfigRequest{
 		TransferConfig: tc,
 		UpdateMask:     fm,
-	}, nil
+	}
+
+	// TODO: not working: nothing changes
+	if cfg.ServiceAccountEmail != "" {
+		req.ServiceAccountName = cfg.ServiceAccountEmail
+	}
+
+	return req, nil
 }
