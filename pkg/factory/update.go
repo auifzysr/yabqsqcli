@@ -124,6 +124,20 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "schedule_options")
 	}
 
+	if cfg.NotificationPubSubTopic != "" {
+		topicName, err := (&domain.PubSubTopic{
+			ProjectID: cfg.ProjectID,
+			TopicID:   cfg.NotificationPubSubTopic,
+		}).Name()
+		if err != nil {
+			return nil, err
+
+		}
+		tc.NotificationPubsubTopic = topicName
+
+		fieldMaskPaths = append(fieldMaskPaths, "notification_pubsub_topic")
+	}
+
 	// TransferConfig works as proto.Message
 	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
 	if err != nil {
