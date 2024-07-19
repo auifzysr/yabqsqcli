@@ -10,7 +10,6 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-// TODO: not working
 func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.UpdateTransferConfigRequest, error) {
 	tcs := &domain.TransferConfigsPathSpec{
 		ProjectID: cfg.ProjectID,
@@ -24,20 +23,22 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 
 	tc := &datatransferpb.TransferConfig{
 		Name: n,
+
+		// TODO: may require fill all fields of datatransferpb.TransferConfig.Params
+		// even if only a part of them are supposed to be updated
+		Params: &structpb.Struct{
+			Fields: map[string]*structpb.Value{},
+		},
 	}
 
 	var fieldMaskPaths []string
 
 	if cfg.Query != "" {
-		params, err := structpb.NewValue(cfg.Query)
+		query, err := structpb.NewValue(cfg.Query)
 		if err != nil {
 			return nil, fmt.Errorf("invalid params: %w", err)
 		}
-		tc.Params = &structpb.Struct{
-			Fields: map[string]*structpb.Value{
-				"query": params,
-			},
-		}
+		tc.Params.Fields["query"] = query
 
 		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
