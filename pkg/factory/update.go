@@ -45,18 +45,6 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
 
-	if cfg.DisplayName != "" {
-		tc.DisplayName = cfg.DisplayName
-		fieldMaskPaths = append(fieldMaskPaths, "display_name")
-	}
-
-	if cfg.DestinationDatasetID != "" {
-		tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
-			DestinationDatasetId: cfg.DestinationDatasetID,
-		}
-		fieldMaskPaths = append(fieldMaskPaths, "destination_dataset_id")
-	}
-
 	if cfg.DestinationTableID != "" {
 		destinationTableIDValue, err := structpb.NewValue(cfg.DestinationTableID)
 		if err != nil {
@@ -97,6 +85,18 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		tc.Params.Fields["write_disposition"] = writeDispositionValue
 
 		fieldMaskPaths = append(fieldMaskPaths, "params")
+	}
+
+	if cfg.DisplayName != "" {
+		tc.DisplayName = cfg.DisplayName
+		fieldMaskPaths = append(fieldMaskPaths, "display_name")
+	}
+
+	if cfg.DestinationDatasetID != "" {
+		tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
+			DestinationDatasetId: cfg.DestinationDatasetID,
+		}
+		fieldMaskPaths = append(fieldMaskPaths, "destination_dataset_id")
 	}
 
 	// TODO: updating starttime or endtime without
