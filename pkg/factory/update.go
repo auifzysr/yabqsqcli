@@ -42,6 +42,11 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
 
+	if cfg.DisplayName != "" {
+		tc.DisplayName = cfg.DisplayName
+		fieldMaskPaths = append(fieldMaskPaths, "display_name")
+	}
+
 	// TransferConfig works as proto.Message
 	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
 	if err != nil {
