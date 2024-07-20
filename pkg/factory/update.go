@@ -155,23 +155,24 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		fieldMaskPaths = append(fieldMaskPaths, "encryption_configuration")
 	}
 
-	// TransferConfig works as proto.Message
-	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
-	if err != nil {
-		return nil, fmt.Errorf("invalid fieldmask: %w", err)
-	}
-
 	// >> UpdateTransferConfig updates a data transfer configuration.
 	// >> All fields must be set, even if they are not updated.
 	req := &datatransferpb.UpdateTransferConfigRequest{
 		TransferConfig: tc,
-		UpdateMask:     fm,
 	}
 
 	// TODO: not working: nothing changes
 	if cfg.ServiceAccountEmail != "" {
 		req.ServiceAccountName = cfg.ServiceAccountEmail
+		fieldMaskPaths = append(fieldMaskPaths, "serviceAccountName")
 	}
+
+	// TransferConfig works as proto.Message
+	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
+	if err != nil {
+		return nil, fmt.Errorf("invalid fieldmask: %w", err)
+	}
+	req.UpdateMask = fm
 
 	return req, nil
 }
