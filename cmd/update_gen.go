@@ -108,6 +108,7 @@ func updateCommand(rootCfg *config.RootConfig) *cli.Command {
 				Name:        "disabled",
 				Aliases:     []string{"x"},
 				Usage:       "disabled",
+				Value:       false,
 				Destination: &cfg.Disabled,
 			},
 			&cli.StringFlag{
@@ -121,6 +122,7 @@ func updateCommand(rootCfg *config.RootConfig) *cli.Command {
 				Name:        "enable-email",
 				Aliases:     []string{"ee"},
 				Usage:       "notification send email on failure",
+				Value:       false,
 				Destination: &cfg.NotificationSendEmail,
 			},
 			&cli.StringFlag{
