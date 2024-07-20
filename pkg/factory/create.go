@@ -41,14 +41,24 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 	tc.Params.Fields["query"] = query
 
 	// optional hereafter
-	tc.DisplayName = cfg.DisplayName
-	tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
-		DestinationDatasetId: cfg.DestinationDatasetID,
+	if tc.DisplayName != "" {
+		tc.DisplayName = cfg.DisplayName
 	}
-	tc.Schedule = cfg.Schedule
-	tc.Disabled = cfg.Disabled
-	tc.EmailPreferences = &datatransferpb.EmailPreferences{
-		EnableFailureEmail: cfg.NotificationSendEmail,
+	if cfg.DestinationDatasetID != "" {
+		tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
+			DestinationDatasetId: cfg.DestinationDatasetID,
+		}
+	}
+	if cfg.Schedule != "" {
+		tc.Schedule = cfg.Schedule
+	}
+	if cfg.Disabled {
+		tc.Disabled = cfg.Disabled
+	}
+	if cfg.NotificationSendEmail != "" {
+		tc.EmailPreferences = &datatransferpb.EmailPreferences{
+			EnableFailureEmail: cfg.NotificationSendEmail,
+		}
 	}
 
 	// params available can be found at:
