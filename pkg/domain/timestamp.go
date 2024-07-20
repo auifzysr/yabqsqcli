@@ -6,9 +6,13 @@ import (
 )
 
 const (
-	timeLayout = time.RFC3339
+	timeLayout = "2006-01-02T15:04:05Z"
 )
 
+// ScheduleOptions' comment:
+// Represents seconds of UTC time since Unix epoch
+// 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+// 9999-12-31T23:59:59Z inclusive.
 func TimestampSeconds(timeRepresentation string) (int64, error) {
 	if timeRepresentation == "" {
 		return 0, fmt.Errorf("time representation string cannot be empty")
