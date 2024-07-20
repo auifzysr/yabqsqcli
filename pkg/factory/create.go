@@ -55,7 +55,7 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 	if cfg.Disabled {
 		tc.Disabled = cfg.Disabled
 	}
-	if cfg.NotificationSendEmail != "" {
+	if cfg.NotificationSendEmail {
 		tc.EmailPreferences = &datatransferpb.EmailPreferences{
 			EnableFailureEmail: cfg.NotificationSendEmail,
 		}
