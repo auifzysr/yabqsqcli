@@ -2,7 +2,6 @@ package factory
 
 import (
 	"fmt"
-	"log"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
@@ -22,31 +21,34 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		return nil, err
 	}
 
-	log.Printf("cfg: %+v", cfg)
-
-	params, err := structpb.NewValue(cfg.Query)
-	if err != nil {
-		return nil, fmt.Errorf("invalid params: %w", err)
-	}
-
 	// TransferConfig has field "name" which is ignored when creating a transfer
 	// See details on the struct's source code
 	tc := &datatransferpb.TransferConfig{
-		DisplayName:  cfg.DisplayName,
 		DataSourceId: "scheduled_query",
-		Destination: &datatransferpb.TransferConfig_DestinationDatasetId{
-			DestinationDatasetId: cfg.DestinationDatasetID,
-		},
 		Params: &structpb.Struct{
-			Fields: map[string]*structpb.Value{
-				"query": params,
-			},
+			Fields: map[string]*structpb.Value{},
 		},
-		Schedule: cfg.Schedule,
-		Disabled: cfg.Disabled,
-		EmailPreferences: &datatransferpb.EmailPreferences{
-			EnableFailureEmail: cfg.NotificationSendEmail,
-		},
+	}
+
+	// required
+	if cfg.Query == "" {
+		return nil, fmt.Errorf("query required")
+	}
+	query, err := structpb.NewValue(cfg.Query)
+	if err != nil {
+		return nil, fmt.Errorf("invalid params: %w", err)
+	}
+	tc.Params.Fields["query"] = query
+
+	// optional hereafter
+	tc.DisplayName = cfg.DisplayName
+	tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
+		DestinationDatasetId: cfg.DestinationDatasetID,
+	}
+	tc.Schedule = cfg.Schedule
+	tc.Disabled = cfg.Disabled
+	tc.EmailPreferences = &datatransferpb.EmailPreferences{
+		EnableFailureEmail: cfg.NotificationSendEmail,
 	}
 
 	// params available can be found at:
@@ -118,15 +120,6 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 		tc.NotificationPubsubTopic = topicName
 	}
 
-	req := &datatransferpb.CreateTransferConfigRequest{
-		Parent:         p,
-		TransferConfig: tc,
-	}
-
-	if cfg.ServiceAccountEmail != "" {
-		req.ServiceAccountName = cfg.ServiceAccountEmail
-	}
-
 	if cfg.EncryptionKeyRing != "" && cfg.EncryptionKey != "" {
 		k, err := (&domain.KMS{
 			ProjectID: cfg.ProjectID,
@@ -143,6 +136,15 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 			},
 		}
 		tc.EncryptionConfiguration = ec
+	}
+
+	req := &datatransferpb.CreateTransferConfigRequest{
+		Parent:         p,
+		TransferConfig: tc,
+	}
+
+	if cfg.ServiceAccountEmail != "" {
+		req.ServiceAccountName = cfg.ServiceAccountEmail
 	}
 
 	return req, nil
