@@ -41,7 +41,7 @@ func CreateTransferConfigFactory(cfg *config.CreateConfig) (*datatransferpb.Crea
 	tc.Params.Fields["query"] = query
 
 	// optional hereafter
-	if tc.DisplayName != "" {
+	if cfg.DisplayName != "" {
 		tc.DisplayName = cfg.DisplayName
 	}
 	if cfg.DestinationDatasetID != "" {
