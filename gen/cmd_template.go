@@ -14,6 +14,9 @@ import (
 	{{- if ne .Name "delete" }}
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	{{- end }}
+    {{- if eq .Name "list" }}
+	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
+	{{- end }}
 	"github.com/urfave/cli/v2"
 )
 
