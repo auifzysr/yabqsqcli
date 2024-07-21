@@ -38,6 +38,13 @@ func Run() error {
 				Usage:       "region",
 				Destination: &rootCfg.Region,
 			},
+			&cli.StringFlag{
+				Name:        "output",
+				Aliases:     []string{"o"},
+				Value:       "json",
+				Usage:       "output format (json/plain)",
+				Destination: &rootCfg.OutputFormat,
+			},
 		},
 		Commands: []*cli.Command{
 			getCommand(rootCfg),

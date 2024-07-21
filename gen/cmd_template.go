@@ -11,6 +11,9 @@ import (
 
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
+	{{- if ne .Name "delete" }}
+	"github.com/auifzysr/yabqsqcli/pkg/domain"
+	{{- end }}
 	"github.com/urfave/cli/v2"
 )
 

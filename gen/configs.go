@@ -16,7 +16,15 @@ var scenarios = []struct {
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 `,
 		Options: []string{
 			"config-id",
@@ -43,12 +51,20 @@ var scenarios = []struct {
 		ClientCallTemplate: `
 	itr := client.ListTransferRuns(ctx, tc)
 	for {
-		c, err := itr.Next()
+		m, err := itr.Next()
 		if err != nil {
 			fmt.Printf("EOL or failed to iterate response: %s", err)
 			break
 		}
-		fmt.Printf("run: %+v\n", c)
+		f, err := domain.SelectFormatter(cfg.OutputFormat)
+		if err != nil {
+			return err
+		}
+		o, err := f.Format(m)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%s", o)
 	}
 `,
 		Options: []string{
@@ -61,12 +77,20 @@ var scenarios = []struct {
 		ClientCallTemplate: `
 	itr := client.ListTransferConfigs(ctx, tc)
 	for {
-		c, err := itr.Next()
+		m, err := itr.Next()
 		if err != nil {
 			fmt.Printf("EOL or failed to iterate response: %s", err)
 			break
 		}
-		fmt.Printf("config: %+v\n", c)
+		f, err := domain.SelectFormatter(cfg.OutputFormat)
+		if err != nil {
+			return err
+		}
+		o, err := f.Format(m)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%s", o)
 	}
 `,
 		Options: []string{},
@@ -80,7 +104,15 @@ var scenarios = []struct {
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 `,
 		Options: []string{
 			"config-id",
@@ -99,7 +131,15 @@ var scenarios = []struct {
 			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
 				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 `,
 		Options: []string{
 			"name",
@@ -130,7 +170,15 @@ var scenarios = []struct {
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 `,
 		Options: []string{
 			"name",
