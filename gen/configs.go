@@ -49,23 +49,24 @@ var scenarios = []struct {
 	{
 		Name: "history",
 		ClientCallTemplate: `
+	var res []*datatransferpb.TransferRun
 	itr := client.ListTransferRuns(ctx, tc)
 	for {
 		m, err := itr.Next()
 		if err != nil {
-			fmt.Printf("EOL or failed to iterate response: %s", err)
 			break
 		}
-		f, err := domain.SelectFormatter(cfg.OutputFormat)
-		if err != nil {
-			return err
-		}
-		o, err := f.Format(m)
-		if err != nil {
-			return err
-		}
-		fmt.Printf("%s", o)
+		res = append(res, m)
 	}
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(res)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 `,
 		Options: []string{
 			"config-id",
