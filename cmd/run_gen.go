@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/auifzysr/yabqsqcli/pkg/config"
+	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
@@ -24,7 +25,15 @@ func run(cfg *config.RunConfig) error {
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 
 	return nil
 }
@@ -59,21 +68,21 @@ func runCommand(rootCfg *config.RootConfig) *cli.Command {
 				Name:        "since",
 				Aliases:     []string{"s"},
 				Value:       "",
-				Usage:       "since what past time running scheduled query, must be with --until in RFC3339",
+				Usage:       "since what past time running scheduled query, must be with --until in %Y-%m-%dT%H-%M-%SZ format",
 				Destination: &cfg.Since,
 			},
 			&cli.StringFlag{
 				Name:        "until",
 				Aliases:     []string{"u"},
 				Value:       "",
-				Usage:       "until what past time running scheduled query, must be with --since in RFC3339",
+				Usage:       "until what past time running scheduled query, must be with --since in %Y-%m-%dT%H-%M-%SZ format",
 				Destination: &cfg.Until,
 			},
 			&cli.StringFlag{
 				Name:        "at",
 				Aliases:     []string{"a"},
 				Value:       "",
-				Usage:       "at what time running scheduled query, in RFC3339",
+				Usage:       "at what time running scheduled query, in %Y-%m-%dT%H-%M-%SZ format",
 				Destination: &cfg.At,
 			},
 		},

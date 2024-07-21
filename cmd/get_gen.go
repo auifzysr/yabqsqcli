@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/auifzysr/yabqsqcli/pkg/config"
+	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
@@ -24,7 +25,15 @@ func get(cfg *config.GetConfig) error {
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 
 	return nil
 }

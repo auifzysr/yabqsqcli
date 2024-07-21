@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/auifzysr/yabqsqcli/pkg/config"
+	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
@@ -24,7 +25,15 @@ func create(cfg *config.CreateConfig) error {
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	fmt.Printf("meta: %+v", m)
+	f, err := domain.SelectFormatter(cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	o, err := f.Format(m)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
 
 	return nil
 }
@@ -129,14 +138,14 @@ func createCommand(rootCfg *config.RootConfig) *cli.Command {
 				Name:        "start-time",
 				Aliases:     []string{"st"},
 				Value:       "",
-				Usage:       "start time",
+				Usage:       "start time in %Y-%m-%dT%H-%M-%SZ format",
 				Destination: &cfg.StartTime,
 			},
 			&cli.StringFlag{
 				Name:        "end-time",
 				Aliases:     []string{"et"},
 				Value:       "",
-				Usage:       "end time",
+				Usage:       "end time in %Y-%m-%dT%H-%M-%SZ format",
 				Destination: &cfg.EndTime,
 			},
 			&cli.StringFlag{
