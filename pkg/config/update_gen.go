@@ -23,3 +23,12 @@ type UpdateConfig struct {
 	EncryptionKeyRing                 string
 	EncryptionKey                     string
 }
+
+func (c *UpdateConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *UpdateConfig) GetDisplayName() string {
+	return c.DisplayName
+
+}

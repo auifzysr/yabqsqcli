@@ -8,3 +8,12 @@ type HistoryConfig struct {
 	TransferConfigID string
 	DisplayName      string
 }
+
+func (c *HistoryConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *HistoryConfig) GetDisplayName() string {
+	return c.DisplayName
+
+}

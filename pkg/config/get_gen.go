@@ -8,3 +8,12 @@ type GetConfig struct {
 	TransferConfigID string
 	DisplayName      string
 }
+
+func (c *GetConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *GetConfig) GetDisplayName() string {
+	return c.DisplayName
+
+}

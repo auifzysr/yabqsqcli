@@ -8,3 +8,12 @@ type DeleteConfig struct {
 	TransferConfigID string
 	DisplayName      string
 }
+
+func (c *DeleteConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *DeleteConfig) GetDisplayName() string {
+	return c.DisplayName
+
+}

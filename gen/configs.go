@@ -3,6 +3,7 @@ package main
 var scenarios = []struct {
 	Name               string
 	ClientCallTemplate string
+	ResolverTemplate   string
 	Options            []string
 	FlagTemplate       string
 	FieldDefinitions   string
@@ -26,6 +27,15 @@ var scenarios = []struct {
 	}
 	fmt.Printf("%s", o)
 `,
+		ResolverTemplate: `
+	if cfg.TransferConfigID == "" {
+configID, err := domain.ResolveTransferConfigID(cfg)
+if err != nil {
+	return err
+}
+cfg.TransferConfigID = configID
+	}
+		`,
 		Options: []string{
 			"config-id",
 			"name",

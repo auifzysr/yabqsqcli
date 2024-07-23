@@ -11,3 +11,12 @@ type RunConfig struct {
 	Until            string
 	At               string
 }
+
+func (c *RunConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *RunConfig) GetDisplayName() string {
+	return c.DisplayName
+
+}
