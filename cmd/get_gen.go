@@ -20,7 +20,6 @@ func get(cfg *config.GetConfig) error {
 		}
 		cfg.TransferConfigID = configID
 	}
-
 	tc, err := factory.GetTransferConfigFactory(cfg)
 	if err != nil {
 		return err

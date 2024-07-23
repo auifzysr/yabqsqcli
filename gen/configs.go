@@ -3,7 +3,7 @@ package main
 var scenarios = []struct {
 	Name               string
 	ClientCallTemplate string
-	ResolverTemplate   string
+	CallResolver       bool
 	Options            []string
 	FlagTemplate       string
 	FieldDefinitions   string
@@ -27,15 +27,7 @@ var scenarios = []struct {
 	}
 	fmt.Printf("%s", o)
 `,
-		ResolverTemplate: `
-	if cfg.TransferConfigID == "" {
-configID, err := domain.ResolveTransferConfigID(cfg)
-if err != nil {
-	return err
-}
-cfg.TransferConfigID = configID
-	}
-		`,
+		CallResolver: true,
 		Options: []string{
 			"config-id",
 			"name",
@@ -51,6 +43,7 @@ cfg.TransferConfigID = configID
 		), err)
 	}
 `,
+		CallResolver: true,
 		Options: []string{
 			"config-id",
 			"name",
@@ -78,6 +71,7 @@ cfg.TransferConfigID = configID
 	}
 	fmt.Printf("%s", o)
 `,
+		CallResolver: true,
 		Options: []string{
 			"config-id",
 			"name",
@@ -126,6 +120,7 @@ cfg.TransferConfigID = configID
 	}
 	fmt.Printf("%s", o)
 `,
+		CallResolver: true,
 		Options: []string{
 			"config-id",
 			"name",
@@ -153,6 +148,7 @@ cfg.TransferConfigID = configID
 	}
 	fmt.Printf("%s", o)
 `,
+		CallResolver: true,
 		Options: []string{
 			"name",
 			"config-id",

@@ -11,9 +11,7 @@ import (
 
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
-	{{- if ne .Name "delete" }}
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
-	{{- end }}
     {{- if or (eq .Name "list") (eq .Name "history")}}
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	{{- end }}
@@ -21,7 +19,15 @@ import (
 )
 
 func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
-	{{- .ResolverTemplate }}
+    {{- if .CallResolver}}
+	if cfg.TransferConfigID == "" {
+		configID, err := domain.ResolveTransferConfigID(cfg)
+		if err != nil {
+			return err
+		}
+		cfg.TransferConfigID = configID
+	}
+	{{- end}}
 	tc, err := factory.{{ .Name | capitalize }}TransferConfigFactory(cfg)
 	if err != nil {
 		return err

@@ -7,11 +7,19 @@ import (
 	"fmt"
 
 	"github.com/auifzysr/yabqsqcli/pkg/config"
+	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
 
 func delete(cfg *config.DeleteConfig) error {
+	if cfg.TransferConfigID == "" {
+		configID, err := domain.ResolveTransferConfigID(cfg)
+		if err != nil {
+			return err
+		}
+		cfg.TransferConfigID = configID
+	}
 	tc, err := factory.DeleteTransferConfigFactory(cfg)
 	if err != nil {
 		return err
