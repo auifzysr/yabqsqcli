@@ -6,3 +6,8 @@ type RootConfig struct {
 
 	OutputFormat string
 }
+
+type Container interface {
+	GetRootConfig() *RootConfig
+	GetDisplayName() string
+}

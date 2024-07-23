@@ -14,13 +14,14 @@ import (
 	{{- if ne .Name "delete" }}
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	{{- end }}
-    {{- if or (eq .Name "list") (eq .Name "history") }}
+    {{- if or (eq .Name "list") (eq .Name "history")}}
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	{{- end }}
 	"github.com/urfave/cli/v2"
 )
 
 func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
+	{{- .ResolverTemplate }}
 	tc, err := factory.{{ .Name | capitalize }}TransferConfigFactory(cfg)
 	if err != nil {
 		return err

@@ -22,3 +22,12 @@ type CreateConfig struct {
 	EncryptionKeyRing                 string
 	EncryptionKey                     string
 }
+
+func (c *CreateConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *CreateConfig) GetDisplayName() string {
+	return c.DisplayName
+
+}

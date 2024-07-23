@@ -5,3 +5,12 @@ package config
 type ListConfig struct {
 	*RootConfig
 }
+
+func (c *ListConfig) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *ListConfig) GetDisplayName() string {
+	return ""
+
+}

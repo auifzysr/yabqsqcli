@@ -13,6 +13,14 @@ import (
 )
 
 func get(cfg *config.GetConfig) error {
+	if cfg.TransferConfigID == "" {
+		configID, err := domain.ResolveTransferConfigID(cfg)
+		if err != nil {
+			return err
+		}
+		cfg.TransferConfigID = configID
+	}
+
 	tc, err := factory.GetTransferConfigFactory(cfg)
 	if err != nil {
 		return err

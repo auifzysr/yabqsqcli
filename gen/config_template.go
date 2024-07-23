@@ -10,4 +10,17 @@ type {{ .Name | capitalize }}Config struct {
 
 	{{ .FieldDefinitions }}
 }
+
+func (c *{{ .Name | capitalize }}Config) GetRootConfig() *RootConfig {
+	return c.RootConfig
+}
+
+func (c *{{ .Name | capitalize }}Config) GetDisplayName() string {
+    {{- if or (eq .Name "list")}}
+	return ""
+	{{- else }}
+	return c.DisplayName
+	{{- end }}
+
+}
 `
