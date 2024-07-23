@@ -3,11 +3,24 @@ package domain
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 )
+
+const (
+	parentFullFormat = `projects/%s/locations/%s`
+	nameFullFormat   = `projects/%s/locations/%s/transferConfigs/%s`
+
+	// TODO: avoid repetition
+	nameFormatSuffix = `%s/transferConfigs/%s`
+
+	nameFullFormatRegexp = `^projects/[^/]+/locations/[^/]+/transferConfigs/[^/]+$`
+)
+
+var nameFullFormatRegexpCompile = regexp.MustCompile(nameFullFormatRegexp)
 
 type TransferConfigsPathSpec struct {
 	ProjectID string
@@ -23,20 +36,21 @@ func (c *TransferConfigsPathSpec) Name() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf(`%s/transferConfigs/%s`, p, c.ID), nil
+	return fmt.Sprintf(nameFormatSuffix, p, c.ID), nil
 }
 
 func (c *TransferConfigsPathSpec) Parent() (string, error) {
 	if c.ProjectID == "" || c.Location == "" {
 		return "", fmt.Errorf("insufficient field values: projectID/ location")
 	}
-	return fmt.Sprintf(`projects/%s/locations/%s`,
-		c.ProjectID, c.Location), nil
+	return fmt.Sprintf(parentFullFormat, c.ProjectID, c.Location), nil
 }
 
 func GetTransferConfigIDByName(name string) (string, error) {
-	//TODO: validator
-	return strings.Split(name, "/")[5], nil
+	if nameFullFormatRegexpCompile.MatchString(name) {
+		return strings.Split(name, "/")[5], nil
+	}
+	return "", fmt.Errorf("name %s not match format %s", name, nameFullFormatRegexp)
 }
 
 func ResolveTransferConfigID(cfg config.Container) (string, error) {
