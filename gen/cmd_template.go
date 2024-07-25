@@ -36,6 +36,14 @@ func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
 
 	{{ .ClientCallTemplate }}
 
+	{{- if ne .Name "delete"}}
+	o, err := domain.Format(res, cfg.OutputFormat)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s", o)
+	{{- end }}
+
 	return nil
 }
 
