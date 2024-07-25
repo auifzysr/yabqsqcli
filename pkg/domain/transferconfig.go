@@ -1,13 +1,11 @@
 package domain
 
 import (
-	"context"
 	"fmt"
 	"regexp"
 	"strings"
 
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
-	"github.com/auifzysr/yabqsqcli/pkg/config"
 )
 
 const (
@@ -53,46 +51,13 @@ func GetTransferConfigIDByName(name string) (string, error) {
 	return "", fmt.Errorf("name %s not match format %s", name, nameFullFormatRegexp)
 }
 
-func ResolveTransferConfigID(cfg config.Container) (string, error) {
-	lcfg := &config.ListConfig{
-		RootConfig: cfg.GetRootConfig(),
-	}
-	tcs := &TransferConfigsPathSpec{
-		ProjectID: lcfg.ProjectID,
-		Location:  lcfg.Region,
-	}
-	p, err := tcs.Parent()
-	if err != nil {
-		return "", err
-	}
-
-	tc := &datatransferpb.ListTransferConfigsRequest{
-		Parent: p,
-	}
-	ctx := context.Background()
-
+func FindTransferConfigIDByName(tcList []*datatransferpb.TransferConfig, filterFunc func(*datatransferpb.TransferConfig) bool) []*datatransferpb.TransferConfig {
 	var candidates []*datatransferpb.TransferConfig
-
-	client, err := InitClient(ctx)
-	if err != nil {
-		return "", fmt.Errorf("data transfer client failed: %w", err)
-	}
-	itr := client.ListTransferConfigs(ctx, tc)
-	for {
-		m, err := itr.Next()
-		if err != nil {
-			break
-		}
-		if m.DisplayName == cfg.GetDisplayName() {
+	for _, m := range tcList {
+		if filterFunc(m) {
 			candidates = append(candidates, m)
 		}
 	}
-	switch len(candidates) {
-	case 0:
-		return "", fmt.Errorf("no such scheduled query: %s", cfg.GetDisplayName())
-	case 1:
-		return GetTransferConfigIDByName(candidates[0].Name)
-	default:
-		return "", fmt.Errorf("pick either of these: %+v", candidates)
-	}
+
+	return candidates
 }

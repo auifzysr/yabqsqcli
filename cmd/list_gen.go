@@ -14,11 +14,11 @@ import (
 )
 
 func list(cfg *config.ListConfig) error {
+	ctx := context.Background()
 	tc, err := factory.ListTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
-	ctx := context.Background()
 
 	var res []*datatransferpb.TransferConfig
 	itr := client.ListTransferConfigs(ctx, tc)

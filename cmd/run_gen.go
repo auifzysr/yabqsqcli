@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 
+	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
@@ -13,18 +14,37 @@ import (
 )
 
 func run(cfg *config.RunConfig) error {
+	ctx := context.Background()
 	if cfg.TransferConfigID == "" {
-		configID, err := domain.ResolveTransferConfigID(cfg)
+		lcfg := &config.ListConfig{
+			RootConfig: cfg.GetRootConfig(),
+		}
+		res, err := callList(ctx, lcfg)
 		if err != nil {
 			return err
 		}
-		cfg.TransferConfigID = configID
+
+		candidates := domain.FindTransferConfigIDByName(res, func(m *datatransferpb.TransferConfig) bool {
+			return m.DisplayName == cfg.GetDisplayName()
+		})
+
+		switch len(candidates) {
+		case 0:
+			return fmt.Errorf("no such scheduled query: %s", cfg.GetDisplayName())
+		case 1:
+			tcid, err := domain.GetTransferConfigIDByName(candidates[0].Name)
+			if err != nil {
+				return err
+			}
+			cfg.TransferConfigID = tcid
+		default:
+			return fmt.Errorf("pick either of these: %+v", candidates)
+		}
 	}
 	tc, err := factory.RunTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
-	ctx := context.Background()
 
 	res, err := client.StartManualTransferRuns(ctx, tc)
 	if err != nil {

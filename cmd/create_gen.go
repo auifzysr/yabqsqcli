@@ -13,11 +13,11 @@ import (
 )
 
 func create(cfg *config.CreateConfig) error {
+	ctx := context.Background()
 	tc, err := factory.CreateTransferConfigFactory(cfg)
 	if err != nil {
 		return err
 	}
-	ctx := context.Background()
 
 	res, err := client.CreateTransferConfig(ctx, tc)
 	if err != nil {
