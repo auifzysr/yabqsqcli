@@ -26,17 +26,14 @@ func update(cfg *config.UpdateConfig) error {
 	}
 	ctx := context.Background()
 
-	m, err := client.UpdateTransferConfig(ctx, tc)
+	res, err := client.UpdateTransferConfig(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
 			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
 				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(m)
+
+	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err
 	}

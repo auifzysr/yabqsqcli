@@ -26,17 +26,14 @@ func get(cfg *config.GetConfig) error {
 	}
 	ctx := context.Background()
 
-	m, err := client.GetTransferConfig(ctx, tc)
+	res, err := client.GetTransferConfig(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("get transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(m)
+
+	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err
 	}

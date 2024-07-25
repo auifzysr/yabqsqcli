@@ -36,11 +36,8 @@ func history(cfg *config.HistoryConfig) error {
 		}
 		res = append(res, m)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(res)
+
+	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err
 	}

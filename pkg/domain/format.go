@@ -5,13 +5,13 @@ import (
 	"fmt"
 )
 
-type Formatter interface {
-	Format(any) (string, error)
+type formatter interface {
+	format(any) (string, error)
 }
 
 type Json struct{}
 
-func (o *Json) Format(d any) (string, error) {
+func (o *Json) format(d any) (string, error) {
 	j, err := json.Marshal(d)
 	if err != nil {
 		return "", err
@@ -21,17 +21,25 @@ func (o *Json) Format(d any) (string, error) {
 
 type PlainText struct{}
 
-func (o *PlainText) Format(d any) (string, error) {
+func (o *PlainText) format(d any) (string, error) {
 	return fmt.Sprintf("%+v", d), nil
 }
 
-func SelectFormatter(format string) (Formatter, error) {
-	switch format {
+func Format(d any, formatRepr string) (string, error) {
+	f, err := selectFormatter(formatRepr)
+	if err != nil {
+		return "", err
+	}
+	return f.format(d)
+}
+
+func selectFormatter(formatRepr string) (formatter, error) {
+	switch formatRepr {
 	case "plain":
 		return &PlainText{}, nil
 	case "json":
 		return &Json{}, nil
 	default:
-		return nil, fmt.Errorf("unsupported format: %s", format)
+		return nil, fmt.Errorf("unsupported format: %s", formatRepr)
 	}
 }

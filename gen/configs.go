@@ -11,21 +11,12 @@ var scenarios = []struct {
 	{
 		Name: "get",
 		ClientCallTemplate: `
-	m, err := client.GetTransferConfig(ctx, tc)
+	res, err := client.GetTransferConfig(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("get transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(m)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", o)
 `,
 		CallResolver: true,
 		Options: []string{
@@ -61,15 +52,6 @@ var scenarios = []struct {
 		}
 		res = append(res, m)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(res)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", o)
 `,
 		CallResolver: true,
 		Options: []string{
@@ -89,36 +71,18 @@ var scenarios = []struct {
 		}
 		res = append(res, m)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(res)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", o)
 `,
 		Options: []string{},
 	},
 	{
 		Name: "run",
 		ClientCallTemplate: `
-	m, err := client.StartManualTransferRuns(ctx, tc)
+	res, err := client.StartManualTransferRuns(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("run transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(m)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", o)
 `,
 		CallResolver: true,
 		Options: []string{
@@ -132,21 +96,12 @@ var scenarios = []struct {
 	{
 		Name: "update",
 		ClientCallTemplate: `
-	m, err := client.UpdateTransferConfig(ctx, tc)
+	res, err := client.UpdateTransferConfig(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
 			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
 				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(m)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", o)
 `,
 		CallResolver: true,
 		Options: []string{
@@ -172,21 +127,12 @@ var scenarios = []struct {
 	{
 		Name: "create",
 		ClientCallTemplate: `
-	m, err := client.CreateTransferConfig(ctx, tc)
+	res, err := client.CreateTransferConfig(ctx, tc)
 	if err != nil {
 		return fmt.Errorf("create transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
-	f, err := domain.SelectFormatter(cfg.OutputFormat)
-	if err != nil {
-		return err
-	}
-	o, err := f.Format(m)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", o)
 `,
 		Options: []string{
 			"name",
