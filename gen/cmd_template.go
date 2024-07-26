@@ -12,11 +12,42 @@ import (
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
-    {{- if ne .Name "create"}}
 	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
-	{{- end }}
 	"github.com/urfave/cli/v2"
 )
+
+{{- if .IsConfig }}
+func call{{ .Name | capitalize }}(ctx context.Context, cfg *config.{{ .Name | capitalize }}Config) ({{- if .IsSlice }}[]{{- end }}*datatransferpb.{{ .APICallResponseTypeName }}, error) {
+{{- else }}
+func call{{ .Name | capitalize }}(ctx context.Context, cfg *config.{{ .Name | capitalize }}Config) ({{- if .IsSlice }}[]{{- end }}*datatransferpb.{{ .APICallResponseTypeName }}, error) {
+{{- end }}
+	var err error
+	var res {{- if .IsSlice }}[]{{- end }}*datatransferpb.{{ .APICallResponseTypeName }}
+
+	tc, err := factory.{{ .Name | capitalize }}TransferConfigFactory(cfg)
+	if err != nil {
+		return nil, err
+	}
+{{- if .IsItr }}
+	itr := client.{{ .APICallFuncName }}(ctx, tc)
+	for {
+		m, err := itr.Next()
+		if err != nil {
+			break
+		}
+		res = append(res, m)
+	}
+{{- else }}
+	{{ if ne .Name "delete" }}res, {{ end }}err = client.{{ .APICallFuncName }}(ctx, tc)
+	if err != nil {
+		return nil, fmt.Errorf("{{ .Name }} transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+			cfg.ProjectID, cfg.Region,
+		), err)
+	}
+{{- end }}
+
+	return res, nil
+}
 
 func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
 	ctx := context.Background()
@@ -48,12 +79,11 @@ func {{ .Name }}(cfg *config.{{ .Name | capitalize }}Config) error {
 		}
 	}
 	{{- end}}
-	tc, err := factory.{{ .Name | capitalize }}TransferConfigFactory(cfg)
+
+	{{ if eq .Name "delete"}}_, {{ else }}res, {{ end }}err := call{{ .Name | capitalize }}(ctx, cfg)
 	if err != nil {
 		return err
 	}
-
-	{{ .ClientCallTemplate }}
 
 	{{- if ne .Name "delete"}}
 	o, err := domain.Format(res, cfg.OutputFormat)

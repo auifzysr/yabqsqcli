@@ -13,6 +13,26 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func callHistory(ctx context.Context, cfg *config.HistoryConfig) ([]*datatransferpb.TransferRun, error) {
+	var err error
+	var res []*datatransferpb.TransferRun
+
+	tc, err := factory.HistoryTransferConfigFactory(cfg)
+	if err != nil {
+		return nil, err
+	}
+	itr := client.ListTransferRuns(ctx, tc)
+	for {
+		m, err := itr.Next()
+		if err != nil {
+			break
+		}
+		res = append(res, m)
+	}
+
+	return res, nil
+}
+
 func history(cfg *config.HistoryConfig) error {
 	ctx := context.Background()
 	if cfg.TransferConfigID == "" {
@@ -41,21 +61,11 @@ func history(cfg *config.HistoryConfig) error {
 			return fmt.Errorf("pick either of these: %+v", candidates)
 		}
 	}
-	tc, err := factory.HistoryTransferConfigFactory(cfg)
+
+	res, err := callHistory(ctx, cfg)
 	if err != nil {
 		return err
 	}
-
-	var res []*datatransferpb.TransferRun
-	itr := client.ListTransferRuns(ctx, tc)
-	for {
-		m, err := itr.Next()
-		if err != nil {
-			break
-		}
-		res = append(res, m)
-	}
-
 	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err

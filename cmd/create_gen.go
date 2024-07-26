@@ -6,26 +6,38 @@ import (
 	"context"
 	"fmt"
 
+	"cloud.google.com/go/bigquery/datatransfer/apiv1/datatransferpb"
 	"github.com/auifzysr/yabqsqcli/pkg/config"
 	"github.com/auifzysr/yabqsqcli/pkg/domain"
 	"github.com/auifzysr/yabqsqcli/pkg/factory"
 	"github.com/urfave/cli/v2"
 )
 
-func create(cfg *config.CreateConfig) error {
-	ctx := context.Background()
+func callCreate(ctx context.Context, cfg *config.CreateConfig) (*datatransferpb.TransferConfig, error) {
+	var err error
+	var res *datatransferpb.TransferConfig
+
 	tc, err := factory.CreateTransferConfigFactory(cfg)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	res, err := client.CreateTransferConfig(ctx, tc)
+	res, err = client.CreateTransferConfig(ctx, tc)
 	if err != nil {
-		return fmt.Errorf("create transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+		return nil, fmt.Errorf("create transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
 			cfg.ProjectID, cfg.Region,
 		), err)
 	}
 
+	return res, nil
+}
+
+func create(cfg *config.CreateConfig) error {
+	ctx := context.Background()
+
+	res, err := callCreate(ctx, cfg)
+	if err != nil {
+		return err
+	}
 	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err

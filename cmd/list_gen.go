@@ -13,14 +13,14 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func list(cfg *config.ListConfig) error {
-	ctx := context.Background()
+func callList(ctx context.Context, cfg *config.ListConfig) ([]*datatransferpb.TransferConfig, error) {
+	var err error
+	var res []*datatransferpb.TransferConfig
+
 	tc, err := factory.ListTransferConfigFactory(cfg)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	var res []*datatransferpb.TransferConfig
 	itr := client.ListTransferConfigs(ctx, tc)
 	for {
 		m, err := itr.Next()
@@ -30,6 +30,16 @@ func list(cfg *config.ListConfig) error {
 		res = append(res, m)
 	}
 
+	return res, nil
+}
+
+func list(cfg *config.ListConfig) error {
+	ctx := context.Background()
+
+	res, err := callList(ctx, cfg)
+	if err != nil {
+		return err
+	}
 	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err
