@@ -13,6 +13,24 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func callRun(ctx context.Context, cfg *config.RunConfig) (*datatransferpb.StartManualTransferRunsResponse, error) {
+	var err error
+	var res *datatransferpb.StartManualTransferRunsResponse
+
+	tc, err := factory.RunTransferConfigFactory(cfg)
+	if err != nil {
+		return nil, err
+	}
+	res, err = client.StartManualTransferRuns(ctx, tc)
+	if err != nil {
+		return nil, fmt.Errorf("run transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+			cfg.ProjectID, cfg.Region,
+		), err)
+	}
+
+	return res, nil
+}
+
 func run(cfg *config.RunConfig) error {
 	ctx := context.Background()
 	if cfg.TransferConfigID == "" {
@@ -41,18 +59,11 @@ func run(cfg *config.RunConfig) error {
 			return fmt.Errorf("pick either of these: %+v", candidates)
 		}
 	}
-	tc, err := factory.RunTransferConfigFactory(cfg)
+
+	res, err := callRun(ctx, cfg)
 	if err != nil {
 		return err
 	}
-
-	res, err := client.StartManualTransferRuns(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("run transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-
 	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err

@@ -13,6 +13,24 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func callDelete(ctx context.Context, cfg *config.DeleteConfig) (*datatransferpb.TransferConfig, error) {
+	var err error
+	var res *datatransferpb.TransferConfig
+
+	tc, err := factory.DeleteTransferConfigFactory(cfg)
+	if err != nil {
+		return nil, err
+	}
+	err = client.DeleteTransferConfig(ctx, tc)
+	if err != nil {
+		return nil, fmt.Errorf("delete transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+			cfg.ProjectID, cfg.Region,
+		), err)
+	}
+
+	return res, nil
+}
+
 func delete(cfg *config.DeleteConfig) error {
 	ctx := context.Background()
 	if cfg.TransferConfigID == "" {
@@ -41,16 +59,10 @@ func delete(cfg *config.DeleteConfig) error {
 			return fmt.Errorf("pick either of these: %+v", candidates)
 		}
 	}
-	tc, err := factory.DeleteTransferConfigFactory(cfg)
+
+	_, err := callDelete(ctx, cfg)
 	if err != nil {
 		return err
-	}
-
-	err = client.DeleteTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("deleting transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
 	}
 
 	return nil

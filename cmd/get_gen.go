@@ -13,6 +13,24 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func callGet(ctx context.Context, cfg *config.GetConfig) (*datatransferpb.TransferConfig, error) {
+	var err error
+	var res *datatransferpb.TransferConfig
+
+	tc, err := factory.GetTransferConfigFactory(cfg)
+	if err != nil {
+		return nil, err
+	}
+	res, err = client.GetTransferConfig(ctx, tc)
+	if err != nil {
+		return nil, fmt.Errorf("get transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+			cfg.ProjectID, cfg.Region,
+		), err)
+	}
+
+	return res, nil
+}
+
 func get(cfg *config.GetConfig) error {
 	ctx := context.Background()
 	if cfg.TransferConfigID == "" {
@@ -41,18 +59,11 @@ func get(cfg *config.GetConfig) error {
 			return fmt.Errorf("pick either of these: %+v", candidates)
 		}
 	}
-	tc, err := factory.GetTransferConfigFactory(cfg)
+
+	res, err := callGet(ctx, cfg)
 	if err != nil {
 		return err
 	}
-
-	res, err := client.GetTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("get transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-
 	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err

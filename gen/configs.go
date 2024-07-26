@@ -1,90 +1,73 @@
 package main
 
 var scenarios = []struct {
-	Name               string
-	ClientCallTemplate string
-	CallResolver       bool
-	Options            []string
-	FlagTemplate       string
-	FieldDefinitions   string
+	Name                    string
+	CallResolver            bool
+	IsConfig                bool
+	IsItr                   bool
+	IsSlice                 bool
+	Options                 []string
+	APICallFuncName         string
+	APICallResponseTypeName string
+	FlagTemplate            string
+	FieldDefinitions        string
 }{
 	{
-		Name: "get",
-		ClientCallTemplate: `
-	res, err := client.GetTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("get transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-`,
-		CallResolver: true,
+		Name:                    "get",
+		CallResolver:            true,
+		IsConfig:                true,
+		IsItr:                   false,
+		IsSlice:                 false,
+		APICallFuncName:         "GetTransferConfig",
+		APICallResponseTypeName: "TransferConfig",
 		Options: []string{
 			"config-id",
 			"name",
 		},
 	},
 	{
-		Name: "delete",
-		ClientCallTemplate: `
-	err = client.DeleteTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("deleting transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-`,
-		CallResolver: true,
+		Name:                    "delete",
+		CallResolver:            true,
+		IsConfig:                true,
+		IsItr:                   false,
+		IsSlice:                 false,
+		APICallFuncName:         "DeleteTransferConfig",
+		APICallResponseTypeName: "TransferConfig",
 		Options: []string{
 			"config-id",
 			"name",
 		},
 	},
 	{
-		Name: "history",
-		ClientCallTemplate: `
-	var res []*datatransferpb.TransferRun
-	itr := client.ListTransferRuns(ctx, tc)
-	for {
-		m, err := itr.Next()
-		if err != nil {
-			break
-		}
-		res = append(res, m)
-	}
-`,
-		CallResolver: true,
+		Name:                    "history",
+		CallResolver:            true,
+		IsConfig:                false,
+		IsItr:                   true,
+		IsSlice:                 true,
+		APICallFuncName:         "ListTransferRuns",
+		APICallResponseTypeName: "TransferRun",
 		Options: []string{
 			"config-id",
 			"name",
 		},
 	},
 	{
-		Name: "list",
-		ClientCallTemplate: `
-	var res []*datatransferpb.TransferConfig
-	itr := client.ListTransferConfigs(ctx, tc)
-	for {
-		m, err := itr.Next()
-		if err != nil {
-			break
-		}
-		res = append(res, m)
-	}
-`,
-		Options: []string{},
+		Name:                    "list",
+		IsConfig:                true,
+		IsItr:                   true,
+		IsSlice:                 true,
+		APICallFuncName:         "ListTransferConfigs",
+		APICallResponseTypeName: "TransferConfig",
+		Options:                 []string{},
 	},
 	{
-		Name: "run",
-		ClientCallTemplate: `
-	res, err := client.StartManualTransferRuns(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("run transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-`,
-		CallResolver: true,
+		Name:                    "run",
+		CallResolver:            true,
+		IsConfig:                false,
+		IsItr:                   false,
+		IsSlice:                 false,
+		APICallFuncName:         "StartManualTransferRuns",
+		APICallResponseTypeName: "StartManualTransferRunsResponse",
 		Options: []string{
 			"config-id",
 			"name",
@@ -94,16 +77,13 @@ var scenarios = []struct {
 		},
 	},
 	{
-		Name: "update",
-		ClientCallTemplate: `
-	res, err := client.UpdateTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
-			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
-				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
-	}
-`,
-		CallResolver: true,
+		Name:                    "update",
+		CallResolver:            true,
+		IsConfig:                true,
+		IsItr:                   false,
+		IsSlice:                 false,
+		APICallFuncName:         "UpdateTransferConfig",
+		APICallResponseTypeName: "TransferConfig",
 		Options: []string{
 			"name",
 			"config-id",
@@ -125,15 +105,12 @@ var scenarios = []struct {
 		},
 	},
 	{
-		Name: "create",
-		ClientCallTemplate: `
-	res, err := client.CreateTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("create transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
-			cfg.ProjectID, cfg.Region,
-		), err)
-	}
-`,
+		Name:                    "create",
+		IsConfig:                true,
+		IsItr:                   false,
+		IsSlice:                 false,
+		APICallFuncName:         "CreateTransferConfig",
+		APICallResponseTypeName: "TransferConfig",
 		Options: []string{
 			"name",
 			"query",

@@ -13,6 +13,24 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func callUpdate(ctx context.Context, cfg *config.UpdateConfig) (*datatransferpb.TransferConfig, error) {
+	var err error
+	var res *datatransferpb.TransferConfig
+
+	tc, err := factory.UpdateTransferConfigFactory(cfg)
+	if err != nil {
+		return nil, err
+	}
+	res, err = client.UpdateTransferConfig(ctx, tc)
+	if err != nil {
+		return nil, fmt.Errorf("update transfer failed: parent: %s, %w", fmt.Sprintf("projects/%s/locations/%s",
+			cfg.ProjectID, cfg.Region,
+		), err)
+	}
+
+	return res, nil
+}
+
 func update(cfg *config.UpdateConfig) error {
 	ctx := context.Background()
 	if cfg.TransferConfigID == "" {
@@ -41,18 +59,11 @@ func update(cfg *config.UpdateConfig) error {
 			return fmt.Errorf("pick either of these: %+v", candidates)
 		}
 	}
-	tc, err := factory.UpdateTransferConfigFactory(cfg)
+
+	res, err := callUpdate(ctx, cfg)
 	if err != nil {
 		return err
 	}
-
-	res, err := client.UpdateTransferConfig(ctx, tc)
-	if err != nil {
-		return fmt.Errorf("updating transfer failed: name=%s, err=%w",
-			fmt.Sprintf("projects/%s/locations/%s/transferConfigs/%s",
-				cfg.ProjectID, cfg.Region, cfg.TransferConfigID), err)
-	}
-
 	o, err := domain.Format(res, cfg.OutputFormat)
 	if err != nil {
 		return err
