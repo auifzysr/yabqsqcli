@@ -11,7 +11,6 @@ type UpdateConfig struct {
 	DestinationDatasetID              string
 	DestinationTableID                string
 	DestinationTablePartitioningField string
-	DestinationTablePartitioningType  string
 	WriteDisposition                  string
 	Schedule                          string
 	Disabled                          bool

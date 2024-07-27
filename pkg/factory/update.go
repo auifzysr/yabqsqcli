@@ -57,22 +57,12 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 	// TODO: not working
 	// params available can be found at:
 	// https://cloud.google.com/bigquery/docs/working-with-transfers#update_a_transfer
-	if cfg.DestinationTablePartitioningField != "" && cfg.DestinationTablePartitioningType != "" {
-		{
-			v, err := structpb.NewValue(cfg.DestinationTablePartitioningField)
-			if err != nil {
-				return nil, fmt.Errorf("invalid partitioning_field: %w", err)
-			}
-			tc.Params.Fields["partitioning_field"] = v
+	if cfg.DestinationTablePartitioningField != "" {
+		v, err := structpb.NewValue(cfg.DestinationTablePartitioningField)
+		if err != nil {
+			return nil, fmt.Errorf("invalid partitioning_field: %w", err)
 		}
-
-		{
-			v, err := structpb.NewValue(cfg.DestinationTablePartitioningType)
-			if err != nil {
-				return nil, fmt.Errorf("invalid partitioning_type: %w", err)
-			}
-			tc.Params.Fields["partitioning_type"] = v
-		}
+		tc.Params.Fields["partitioning_field"] = v
 
 		fieldMaskPaths = append(fieldMaskPaths, "params")
 	}
