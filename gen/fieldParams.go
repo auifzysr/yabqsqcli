@@ -106,17 +106,6 @@ var fieldParams = map[string]fieldParam{
 				Destination: &cfg.DestinationTablePartitioningField,
 			},`,
 	},
-	"partitioning-type": {
-		name:                    "partitioning-type",
-		fieldDefinitionTemplate: "DestinationTablePartitioningType string",
-		flagDefinitionTemplate: `&cli.StringFlag{
-				Name:        "partitioning-type",
-				Aliases:     []string{"pt"},
-				Value:       "",
-				Usage:       "destination table partitioning type",
-				Destination: &cfg.DestinationTablePartitioningField,
-			},`,
-	},
 	"write-disposition": {
 		name:                    "write-disposition",
 		fieldDefinitionTemplate: "WriteDisposition string",

@@ -128,13 +128,6 @@ func updateCommand(rootCfg *config.RootConfig) *cli.Command {
 				Destination: &cfg.DestinationTablePartitioningField,
 			},
 			&cli.StringFlag{
-				Name:        "partitioning-type",
-				Aliases:     []string{"pt"},
-				Value:       "",
-				Usage:       "destination table partitioning type",
-				Destination: &cfg.DestinationTablePartitioningField,
-			},
-			&cli.StringFlag{
 				Name:        "write-disposition",
 				Aliases:     []string{"wd"},
 				Value:       "",
