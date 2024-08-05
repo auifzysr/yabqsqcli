@@ -42,7 +42,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		}
 		tc.Params.Fields["query"] = query
 
-		fieldMaskPaths = append(fieldMaskPaths, "params")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.params")
 	}
 
 	if cfg.DestinationTableID != "" {
@@ -51,7 +51,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 			return nil, fmt.Errorf("invalid destination_table_id: %w", err)
 		}
 		tc.Params.Fields["destination_table_name_template"] = destinationTableIDValue
-		fieldMaskPaths = append(fieldMaskPaths, "params")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.params")
 	}
 
 	// TODO: not working
@@ -64,7 +64,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		}
 		tc.Params.Fields["partitioning_field"] = v
 
-		fieldMaskPaths = append(fieldMaskPaths, "params")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.params")
 	}
 
 	if cfg.WriteDisposition != "" {
@@ -74,19 +74,19 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		}
 		tc.Params.Fields["write_disposition"] = writeDispositionValue
 
-		fieldMaskPaths = append(fieldMaskPaths, "params")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.params")
 	}
 
 	if cfg.DisplayName != "" {
 		tc.DisplayName = cfg.DisplayName
-		fieldMaskPaths = append(fieldMaskPaths, "display_name")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.display_name")
 	}
 
 	if cfg.DestinationDatasetID != "" {
 		tc.Destination = &datatransferpb.TransferConfig_DestinationDatasetId{
 			DestinationDatasetId: cfg.DestinationDatasetID,
 		}
-		fieldMaskPaths = append(fieldMaskPaths, "destination_dataset_id")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.destination_dataset_id")
 	}
 
 	// TODO: updating starttime or endtime without
@@ -101,7 +101,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 			Seconds: seconds,
 		}
 
-		fieldMaskPaths = append(fieldMaskPaths, "schedule_options")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.schedule_options")
 	}
 	if cfg.EndTime != "" {
 		seconds, err := domain.TimestampSeconds(cfg.EndTime)
@@ -112,12 +112,12 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 			Seconds: seconds,
 		}
 
-		fieldMaskPaths = append(fieldMaskPaths, "schedule_options")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.schedule_options")
 	}
 
 	if cfg.Schedule != "" {
 		tc.Schedule = cfg.Schedule
-		fieldMaskPaths = append(fieldMaskPaths, "schedule")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.schedule")
 	}
 
 	if cfg.NotificationPubSubTopic != "" {
@@ -131,7 +131,7 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		}
 		tc.NotificationPubsubTopic = topicName
 
-		fieldMaskPaths = append(fieldMaskPaths, "notification_pubsub_topic")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.notification_pubsub_topic")
 	}
 
 	// TODO: yet to be tested with the Google Cloud's API
@@ -152,26 +152,28 @@ func UpdateTransferConfigFactory(cfg *config.UpdateConfig) (*datatransferpb.Upda
 		}
 		tc.EncryptionConfiguration = ec
 
-		fieldMaskPaths = append(fieldMaskPaths, "encryption_configuration")
+		fieldMaskPaths = append(fieldMaskPaths, "transfer_config.encryption_configuration")
 	}
 
 	// >> UpdateTransferConfig updates a data transfer configuration.
 	// >> All fields must be set, even if they are not updated.
-	req := &datatransferpb.UpdateTransferConfigRequest{
-		TransferConfig: tc,
-	}
+	req := &datatransferpb.UpdateTransferConfigRequest{}
 
 	// TODO: not working: nothing changes
 	if cfg.ServiceAccountEmail != "" {
 		req.ServiceAccountName = cfg.ServiceAccountEmail
-		fieldMaskPaths = append(fieldMaskPaths, "serviceAccountName")
+		fieldMaskPaths = append(fieldMaskPaths, "service_account_name")
 	}
 
 	// TransferConfig works as proto.Message
-	fm, err := fieldmaskpb.New(tc, fieldMaskPaths...)
+	fm, err := fieldmaskpb.New(req, fieldMaskPaths...)
 	if err != nil {
 		return nil, fmt.Errorf("invalid fieldmask: %w", err)
 	}
+
+	// >> UpdateTransferConfig updates a data transfer configuration.
+	// >> All fields must be set, even if they are not updated.
+	req.TransferConfig = tc
 	req.UpdateMask = fm
 
 	return req, nil
